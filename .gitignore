@@ -34,5 +34,5 @@ buildNumber.properties
 hs_err_pid*
 
 # Intelij
-.DS_Store
-.idea
+*.DS_Store
+*.idea

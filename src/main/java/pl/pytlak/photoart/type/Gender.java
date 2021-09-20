@@ -1,4 +1,4 @@
-package pl.pytlak.photoart.entity;
+package pl.pytlak.photoart.type;
 
 public enum Gender {
     FEMALE,
