@@ -18,6 +18,9 @@ public class RegisterRequest {
     String email;
 
     @NotNull
+    String username;
+
+    @NotNull
     String firstName;
 
     @NotNull
@@ -31,4 +34,5 @@ public class RegisterRequest {
 
     @NotNull
     Gender gender;
+
 }

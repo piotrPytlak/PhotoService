@@ -25,13 +25,14 @@ public class PhotoArtApplication implements CommandLineRunner {
         try {
             User admin = new User();
             admin.setEmail("admin@wp.pl");
+            admin.setUsername("admin");
             admin.setFirstName("admin");
             admin.setLastName("admin");
             admin.setAge(22);
             admin.setPassword(passwordEncoder.encode("password123!"));
             admin.setGender(Gender.MALE);
             userRepository.save(admin);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 

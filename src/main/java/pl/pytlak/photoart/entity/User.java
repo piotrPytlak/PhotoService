@@ -1,64 +1,72 @@
 package pl.pytlak.photoart.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import pl.pytlak.photoart.type.Gender;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name="user_table")
+@Table(name = "user_table")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
-    String email;
+    private String email;
+
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @Column(nullable = false)
-    String firstName;
+    private String firstName;
 
     @Column(nullable = false)
-    String lastName;
+    private String lastName;
 
     @Column(nullable = false)
-    String password;
+    private String password;
 
     @Column(nullable = false)
-    Integer age;
+    private Integer age;
+
+    @CreationTimestamp
+    Timestamp creationTime;
 
     @Column()
-    Gender gender;
+    private Gender gender;
 
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    List<Album> albums = new ArrayList<>();
+    private List<Album> albums;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Follow> follows;
 
 
-    public User(String email, String firstName, String lastName, String password, Integer age, Gender gender) {
+    public User(String email, String username, String firstName, String lastName, String password, Integer age, Gender gender) {
         this.email = email;
+        this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.age = age;
         this.gender = gender;
-    }
-
-    public void addAlbum(Album album) {
-        albums.add(album);
-        album.setUser(this);
-    }
-
-
-    public void deleteAlbum(Album album) {
-        albums.remove(album);
     }
 
 

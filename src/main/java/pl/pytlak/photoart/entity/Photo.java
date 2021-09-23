@@ -2,9 +2,15 @@ package pl.pytlak.photoart.entity;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -13,26 +19,34 @@ public class Photo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(nullable = false)
-    String link;
+    private String link;
 
     @Column(nullable = false)
-    String title;
+    private String title;
 
-    @Column
-    String description;
+    @CreationTimestamp
+    Timestamp creationTime;
 
     @ManyToOne
-    @JoinColumn(name="photos", nullable = false)
-    Album album;
+    @JoinColumn(name = "photos")
+    private Album album;
 
 
-    public Photo(Long id, String link, String title, String description) {
-        this.id = id;
-        this.link = link;
-        this.title = title;
-        this.description = description;
-    }
+    @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Tag> tags;
+
+    @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Comment> comments;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn
+    private PhotoDetails photoDetails;
+
 }

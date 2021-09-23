@@ -4,9 +4,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -16,36 +17,24 @@ public class Album {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(nullable = false)
-    String name;
+    private String name;
 
     @Column
-    String description;
+    private String description;
+
+    @CreationTimestamp
+    Timestamp creationTime;
 
     @ManyToOne
     @JoinColumn(name = "albums", nullable = false)
-    User user;
+    private User user;
 
-    @OneToMany(mappedBy = "album",fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    List<Photo> photos = new ArrayList<>();
+    private List<Photo> photos;
 
-    public Album(Long id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
-
-
-    public void addPhoto(Photo photo){
-        photos.add(photo);
-        photo.setAlbum(this);
-    }
-
-    public void deletePhoto(Photo photo){
-        photos.remove(photo);
-    }
 }

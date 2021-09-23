@@ -24,7 +24,7 @@ export function Test() {
 
 
         if (selectedFile) {
-            formData.append('File', selectedFile);
+            formData.append('img', selectedFile);
         }
 
 

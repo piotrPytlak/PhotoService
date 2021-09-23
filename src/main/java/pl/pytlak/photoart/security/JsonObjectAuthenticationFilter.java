@@ -16,6 +16,10 @@ import java.io.IOException;
 
 public class JsonObjectAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -33,6 +37,8 @@ public class JsonObjectAuthenticationFilter extends UsernamePasswordAuthenticati
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
+
 
 
 }
