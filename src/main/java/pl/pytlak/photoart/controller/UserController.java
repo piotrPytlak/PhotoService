@@ -25,12 +25,6 @@ public class UserController {
     public void login(@Valid @RequestBody LoginRequest loginRequest) {
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
-
-
     @PostMapping("/register")
     public ResponseEntity<AuthenticationModel> register(@Valid @RequestBody RegisterRequest registerRequest) {
         String email = registerRequest.getEmail();
@@ -46,7 +40,7 @@ public class UserController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
-    //TODO addAlbum method
 
+    //TODO method to show user albums
 
 }

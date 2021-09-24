@@ -33,7 +33,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login", "/register", "/test", "/images/**", "/v2/api-docs",
+                .antMatchers(
+                        "/login",
+                        "/register",
+                        "/images/**",
+                        "/v2/api-docs",
                         "/configuration/ui",
                         "/swagger-resources/**",
                         "/configuration/security",

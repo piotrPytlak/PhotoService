@@ -29,10 +29,10 @@ public class Album {
     Timestamp creationTime;
 
     @ManyToOne
-    @JoinColumn(name = "albums", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "album", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Photo> photos;

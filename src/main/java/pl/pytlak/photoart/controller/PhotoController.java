@@ -5,14 +5,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.pytlak.photoart.dto.request.UploadRequest;
+import pl.pytlak.photoart.entity.Album;
 import pl.pytlak.photoart.entity.Photo;
 import pl.pytlak.photoart.entity.User;
+import pl.pytlak.photoart.service.album.AlbumService;
 import pl.pytlak.photoart.service.authentication.AuthenticationService;
 import pl.pytlak.photoart.service.photo.PhotoService;
 
+import javax.validation.Valid;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,25 +27,36 @@ public class PhotoController {
 
     private final PhotoService photoService;
     private final AuthenticationService authenticationService;
+    private final AlbumService albumService;
 
-    @PostMapping("/test")
-    public ResponseEntity<Object> upload(@RequestPart String title, @RequestPart MultipartFile img) throws IOException {
+    @PostMapping("/upload")
+    public ResponseEntity<Object> upload(@Valid @RequestBody UploadRequest uploadRequest, @RequestParam MultipartFile img) {
 
+        Path photoPath = Paths.get("C:\\Projects\\PhotoArt\\src\\main\\resources\\static\\images\\");
         User user = authenticationService.getCurrentUser();
         String originalFilename = img.getOriginalFilename();
+        Optional<Album> optionalAlbum = albumService.findByAlbumIdAndUserId(uploadRequest.getAlbumId(), user.getId());
 
-        String imgName = photoService.createName(user, originalFilename);
-        File photoFile = new File("C:\\Projects\\PhotoArt\\src\\main\\resources\\static\\images\\" + imgName);
-        FileOutputStream fileOutputStream = new FileOutputStream(photoFile);
+        if (optionalAlbum.isPresent()) {
+            Photo photo = Photo.builder()
+                    .name(img.getOriginalFilename())
+                    .title(uploadRequest.getTitle())
+                    .album(optionalAlbum.get())
+                    .build();
 
-        fileOutputStream.write(img.getBytes());
-        fileOutputStream.close();
+            Long photoId = photoService.add(photo).getId();
+            File photoFile = new File(photoPath + user.getUsername() + "-" + photoId + "-" + originalFilename);
 
-        Photo photo = new Photo();
-        photo.setTitle(title);
-        photo.setLink(photoFile.getAbsolutePath());
-        photoService.add(photo);
+            try {
+                img.transferTo(photoFile);
+            } catch (IOException exception) {
+                photoService.remove(photo);
+                return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 }
