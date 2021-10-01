@@ -1,6 +1,7 @@
 package pl.pytlak.photoart.security;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.tika.Tika;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -67,5 +68,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public Tika tika(){
+        return new Tika();
     }
 }

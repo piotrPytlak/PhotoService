@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AlbumAddRequest {
 
-    @NotNull
+
     String name;
 
     String description;
