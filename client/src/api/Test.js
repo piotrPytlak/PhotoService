@@ -1,7 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Container } from '@material-ui/core';
-import { Input } from "semantic-ui-react";
-import { Button } from "semantic-ui-react";
+
 
 let header = {
     'Access-Control-Allow-Credentials': 'true',
@@ -14,40 +12,6 @@ let header = {
 
 export function Test() {
 
-    const cridentials = useRef({
-        login: '',
-        password: ''
-    });
-
-    const album = useRef({
-        name: '',
-        description: ''
-    });
-
-
-    const handleInputAlbumName = (event) => {
-        album.current.name = event.target.value;
-    }
-
-    const handleInputAlbumDescription = (event) => {
-        album.current.description = event.target.value;
-    }
-
-
-    const handleInputLogin = (event) => {
-        cridentials.current.login = event.target.value;
-    }
-
-    const handleInputPassword = (event) => {
-        cridentials.current.password = event.target.value;
-    }
-
-    const handleSubmmitButton = (event) => {
-        const jsonData = {
-
-            email: cridentials.current.login,
-            password: cridentials.current.password
-        };
 
         fetch(
             'http://localhost:8080/login',
@@ -63,7 +27,7 @@ export function Test() {
                 console.log('Success:', result);
             })
             .catch((error) => {
-                console.error('Error:', error);
+                console.error('Error:', error); 
             });
 
     }

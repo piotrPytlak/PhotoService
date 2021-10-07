@@ -1,7 +1,7 @@
-import  {Test} from './api/Test';
+import { AppContent } from './AppContent';
 
-function App() {
-  return <Test />
+export function App() {
+  return <AppContent />
 }
 
-export default App;
+
