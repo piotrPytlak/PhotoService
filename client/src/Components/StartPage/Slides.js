@@ -8,7 +8,7 @@ function importAll(r) {
     return r.keys().map(r);
 }
 
-const images = importAll(require.context('../images/background/', false, /\.(png|jpe?g|svg)$/)).map(x=>x.default);
+const images = importAll(require.context('../../images/background/', false, /\.(png|jpe?g|svg)$/)).map(x => x.default);
 
 
 const backgroundPhotos = makeStyles({
@@ -24,7 +24,6 @@ const backgroundPhotos = makeStyles({
             backgroundPosition: '50% 50%',
             backgroundRepeat: 'none',
             zIndex: 1
-
 
         }
 })

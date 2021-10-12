@@ -6,7 +6,7 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import {makeStyles} from "@material-ui/core";
 import Button from "@mui/material/Button";
-import PhotoArt from '../images/PhotoArt-logos_black.png'
+import PhotoArt from '../../images/PhotoArt-logos_black.png'
 
 
 const style = {
@@ -125,9 +125,7 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 
 export default function PrimarySearchAppBar() {
 
-
     const classes = useStyle();
-
 
     return (
 

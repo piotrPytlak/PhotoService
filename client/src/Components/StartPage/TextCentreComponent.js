@@ -64,9 +64,9 @@ export function TextCentreComponent() {
                         Find your inspiration.
                     </h1>
 
-
                     <h3 className={classes.lineTwo}>
-                        Join the PhotoArt community, home to tens of billions of <br/> photos and 2 million groups. </h3>
+                        Join the PhotoArt community, home to tens of billions of <br/> photos and 2 million groups.
+                    </h3>
                     <Button style={style.buttonSignIn}>
                         Start now!
                     </Button>

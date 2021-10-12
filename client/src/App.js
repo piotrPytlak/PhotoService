@@ -1,7 +1,10 @@
-import { AppContent } from './AppContent';
+import {AppContext} from './AppContext';
 
 export function App() {
-  return <AppContent />
+
+    return (
+        <AppContext/>
+    )
 }
 
 
