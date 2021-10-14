@@ -1,11 +1,10 @@
 import {createTheme} from "@mui/material";
 import {
-    Avatar,
     Box,
     Checkbox,
     Container,
     CssBaseline,
-    FormControlLabel, Grid,
+    FormControlLabel,
     Link,
     TextField,
     Typography
@@ -13,7 +12,8 @@ import {
 import {ThemeProvider} from "@emotion/react";
 import Button from "@mui/material/Button";
 import * as React from "react";
-import PhotoArtBlack from '../../images/PhotoArt-logos_black.png'
+import {useContext, useRef} from "react";
+import {apiContext} from "../../network/ApiContext";
 
 
 const style = {
@@ -43,9 +43,9 @@ const style = {
         display: 'flex',
         justifyContent: 'flex-start',
         flexDirection: 'column',
-        flexFlow:'column wrap',
+        flexFlow: 'column wrap',
         flexWrap: 'wrap',
-        alignContent:'center'
+        alignContent: 'center'
     },
     p: {
         fontSize: '17px',
@@ -68,14 +68,18 @@ const theme = createTheme();
 
 
 export default function SignIn() {
+    const {login} = useContext(apiContext)
+
+
+    const refEmail = useRef()
+    const refPassword = useRef()
+
     const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        // eslint-disable-next-line no-console
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        event.preventDefault()
+        login(refEmail.current.value, refPassword.current.value)
+            .then((x) => console.log(x))
+            .catch((error) => console.log(error))
+
     };
 
     return (
@@ -92,33 +96,32 @@ export default function SignIn() {
                         }}
                     >
                         <div style={style.logIn}>
-                            <Typography component="h1" variant="h5" >
+                            <Typography component="h1" variant="h5">
                                 <b>Log in to PhotoArt</b>
 
                             </Typography>
-                            <img style={{maxHeight: '4vh', marginTop:'10px'}} src={PhotoArtBlack}
-                                 alt={'Logo'}/>
+
                         </div>
                         <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                autoFocus
+                            <TextField inputRef={refEmail}
+                                       margin="normal"
+                                       required
+                                       fullWidth
+                                       id="email"
+                                       label="Email Address"
+                                       name="email"
+                                       autoComplete="email"
+                                       autoFocus
                             />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
+                            <TextField inputRef={refPassword}
+                                       margin="normal"
+                                       required
+                                       fullWidth
+                                       name="password"
+                                       label="Password"
+                                       type="password"
+                                       id="password"
+                                       autoComplete="current-password"
                             />
                             <FormControlLabel
                                 control={<Checkbox value="remember" color="primary"/>}

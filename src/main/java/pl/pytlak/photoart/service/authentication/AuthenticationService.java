@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.pytlak.photoart.dto.request.RegisterRequest;
 import pl.pytlak.photoart.repository.AuthenticationRepository;
 import pl.pytlak.photoart.type.Gender;
 import pl.pytlak.photoart.entity.User;
@@ -22,12 +23,12 @@ public class AuthenticationService implements AuthenticationRepository {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Optional<AuthenticationModel> register(String email, String username, String firstName, String lastName, String password, Integer age, Gender gender) {
-        User user = new User(email, username, firstName, lastName, passwordEncoder.encode(password), age, gender);
+    public Optional<User> register(RegisterRequest registerRequest) {
+        User user = new User(registerRequest.getEmail(), registerRequest.getUsername(), registerRequest.getFirstName(), registerRequest.getLastName(),
+                passwordEncoder.encode(registerRequest.getPassword()), registerRequest.getAge(), registerRequest.getGender());
 
         try {
-            userRepository.save(user);
-            return Optional.of(new AuthenticationModel(user));
+            return Optional.of(userRepository.save(user));
         } catch (Exception e) {
             return Optional.empty();
         }
@@ -39,5 +40,6 @@ public class AuthenticationService implements AuthenticationRepository {
         return ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
 
     }
+
 
 }

@@ -1,9 +1,9 @@
-import {AppContext} from './AppContext';
+import {AppContent} from './AppContent';
 
 export function App() {
 
     return (
-        <AppContext/>
+        <AppContent/>
     )
 }
 

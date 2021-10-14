@@ -1,5 +1,6 @@
 package pl.pytlak.photoart.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.tika.Tika;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final FailureHandler failureHandler;
     private final SuccessHandler successHandler;
+    private final SuccessHandlerRegister successHandlerRegister;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -45,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-ui.html",
                         "/webjars/**").permitAll()
                 .anyRequest().authenticated()
-                .and()
+                .and().addFilter(registerFilter())
                 .addFilter(filter()).exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .and()
                 .headers().frameOptions().disable();
@@ -58,11 +61,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public JsonObjectAuthenticationFilter filter() throws Exception {
-        JsonObjectAuthenticationFilter filter = new JsonObjectAuthenticationFilter();
+
+        JsonObjectAuthenticationFilter filter = new JsonObjectAuthenticationFilter(objectMapper);
         filter.setAuthenticationFailureHandler(failureHandler);
         filter.setAuthenticationSuccessHandler(successHandler);
         filter.setAuthenticationManager(authenticationManager());
         return filter;
+    }
+
+    @Bean
+    public JsonRegisterAuthenticationFilter registerFilter() throws Exception {
+        JsonRegisterAuthenticationFilter registerFilter = new JsonRegisterAuthenticationFilter();
+        registerFilter.setAuthenticationSuccessHandler(successHandlerRegister);
+        registerFilter.setAuthenticationManager(authenticationManager());
+
+        return registerFilter;
     }
 
     @Bean
@@ -71,7 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public Tika tika(){
+    public Tika tika() {
         return new Tika();
     }
 }

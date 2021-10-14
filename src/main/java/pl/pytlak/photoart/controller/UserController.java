@@ -26,18 +26,8 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationModel> register(@Valid @RequestBody RegisterRequest registerRequest) {
-        String email = registerRequest.getEmail();
-        String username = registerRequest.getUsername();
-        String firstName = registerRequest.getFirstName();
-        String lastName = registerRequest.getLastName();
-        String password = registerRequest.getPassword();
-        Integer age = registerRequest.getAge();
-        Gender gender = registerRequest.getGender();
+    public void register(@Valid @RequestBody RegisterRequest registerRequest) {
 
-        Optional<AuthenticationModel> authenticationModelOptional = authenticationService.register(email, username, firstName, lastName, password, age, gender);
-        return authenticationModelOptional.map(a -> new ResponseEntity<>(a, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
 
