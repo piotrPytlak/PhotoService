@@ -49,7 +49,11 @@ const style = {
         borderRadius: '10px',
         fontSize: '24px',
         fontWeight: 'bold'
+    },
+    buttonLink:{
+        textDecoration: 'none'
     }
+
 }
 
 export function TextCentreComponent() {
@@ -67,9 +71,9 @@ export function TextCentreComponent() {
                     <h3 className={classes.lineTwo}>
                         Join the PhotoArt community, home to tens of billions of <br/> photos and 2 million groups.
                     </h3>
-                    <Button style={style.buttonSignIn}>
+                    <a href='signup'  style={style.buttonLink}>  <Button style={style.buttonSignIn}>
                         Start now!
-                    </Button>
+                    </Button> </a>
 
                 </div>
 

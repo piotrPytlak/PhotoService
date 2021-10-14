@@ -6,7 +6,7 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import {makeStyles} from "@material-ui/core";
 import Button from "@mui/material/Button";
-import PhotoArt from '../../images/PhotoArt-logos_black.png'
+import PhotoArt from '../../images/PhotoArt-logos_white.png'
 
 
 const style = {
@@ -59,6 +59,10 @@ const style = {
         justifyContent: 'space-between',
         padding: 0,
         margin: 0
+    },
+
+    buttonLink:{
+        textDecoration:'none'
     }
 }
 
@@ -132,8 +136,8 @@ export default function PrimarySearchAppBar() {
         <AppBar elevation={0} position='absolute' style={style.appBar}>
             <Toolbar style={style.toolBar}>
 
-                <img style={{maxHeight: '40px', marginLeft: '35px'}} src={PhotoArt}
-                     alt={'Logo'}/>
+                <a href='home'> <img style={{maxHeight: '40px', marginLeft: '35px'}} src={PhotoArt}
+                                     alt={'Logo'}/></a>
                 <Search>
                     <SearchIconWrapper>
                         <SearchIcon/>
@@ -144,14 +148,13 @@ export default function PrimarySearchAppBar() {
                     />
                 </Search>
                 <div className={classes.buttonsPanel}>
-                    <Button style={style.buttonLogIn}>
+                    <a href='login'  style={style.buttonLink}> <Button style={style.buttonLogIn}>
                         Log In
-                    </Button>
-                    <Button style={style.buttonSignIn}>
+                    </Button> </a>
+                    <a href='signup'  style={style.buttonLink}>  <Button style={style.buttonSignIn}>
                         Sign Up
-                    </Button>
+                    </Button> </a>
                 </div>
-
             </Toolbar>
         </AppBar>
 

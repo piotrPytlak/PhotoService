@@ -6,11 +6,11 @@ export function AppContext() {
 
     return (<Router>
             <Switch>
-                <Route path="/test">
+                <Route path="/home">
                     <StartPageComponent/>
                 </Route>
 
-                <Route path="/testt">
+                <Route path="/login">
                     <LogInPageComponent/>
                 </Route>
             </Switch>
