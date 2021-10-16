@@ -13,7 +13,7 @@ import {ThemeProvider} from "@emotion/react";
 import Button from "@mui/material/Button";
 import * as React from "react";
 import {useContext, useRef} from "react";
-import {apiContext} from "../../network/ApiContext";
+import {apiContext} from "../../store/ApiContext";
 
 
 const style = {
@@ -67,6 +67,7 @@ const style = {
 const theme = createTheme();
 
 
+
 export default function SignIn() {
     const {login} = useContext(apiContext)
 
@@ -77,7 +78,7 @@ export default function SignIn() {
     const handleSubmit = (event) => {
         event.preventDefault()
         login(refEmail.current.value, refPassword.current.value)
-            .then((x) => console.log(x))
+            .then()
             .catch((error) => console.log(error))
 
     };
