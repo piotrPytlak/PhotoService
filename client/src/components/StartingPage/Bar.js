@@ -6,7 +6,7 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import {makeStyles} from "@material-ui/core";
 import Button from "@mui/material/Button";
-import PhotoArt from '../../images/PhotoArt-logos_white.png'
+import PhotoArt from '../../images/logo/logo_white.png'
 
 
 const style = {

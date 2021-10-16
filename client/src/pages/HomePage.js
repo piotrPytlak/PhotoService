@@ -1,14 +1,14 @@
-import BarComponent from '../StartingPage/BarComponent'
-import {Slides} from '../StartingPage/Slides'
-import {TextCentreComponent} from '../StartingPage/TextCentreComponent'
+import BarComponent from '../components/StartingPage/Bar'
+import {BackgroundSlides} from '../components/StartingPage/BackgroundSlides'
+import {CentreText} from '../components/StartingPage/CentreText'
 
 export function HomePage() {
 
     return (
         <>
             <BarComponent/>
-            <Slides/>
-            <TextCentreComponent/>
+            <BackgroundSlides/>
+            <CentreText/>
         </>
     )
 }

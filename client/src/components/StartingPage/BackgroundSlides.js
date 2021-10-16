@@ -29,7 +29,7 @@ const backgroundPhotos = makeStyles({
 })
 
 
-export function Slides() {
+export function BackgroundSlides() {
 
     const classes = backgroundPhotos();
 

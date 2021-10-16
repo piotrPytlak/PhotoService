@@ -71,7 +71,7 @@ const style = {
 const theme = createTheme();
 const genders = ['male', 'female'];
 
-export default function SignUp() {
+export default function RegisterForm() {
 
 
     const [error, setError] = useState(false)

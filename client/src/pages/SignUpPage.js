@@ -1,6 +1,6 @@
-import BarComponent from '../Register/Bar.js'
-import {BackgroundImage} from '../Register/Background.js'
-import Signup from "../Register/Signup";
+import BarComponent from '../components/Register/Bar.js'
+import {BackgroundImage} from '../components/Register/Background.js'
+import Signup from "../components/Register/RegisterForm";
 
 export function SignUpPage() {
     return (

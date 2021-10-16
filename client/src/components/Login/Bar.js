@@ -1,7 +1,7 @@
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import PhotoArt from '../../images/PhotoArt-logos_white.png'
+import PhotoArt from '../../images/logo/logo_white.png'
 
 
 const style = {
@@ -64,8 +64,6 @@ const style = {
 
 
 export default function PrimarySearchAppBar() {
-
-    //add link to logo img localhost:3000/home
 
     return (
 

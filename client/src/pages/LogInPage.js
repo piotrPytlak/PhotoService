@@ -1,6 +1,6 @@
-import BarComponent from '../Login/Bar.js'
-import {BackgroundImage} from '../Login/Background.js'
-import SignIn from "../Login/Login";
+import BarComponent from '../components/Login/Bar.js'
+import {BackgroundImage} from '../components/Login/Background.js'
+import SignIn from "../components/Login/LoginForm";
 
 export function LogInPage() {
     return (
