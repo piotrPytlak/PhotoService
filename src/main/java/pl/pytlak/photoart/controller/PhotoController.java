@@ -1,12 +1,10 @@
 package pl.pytlak.photoart.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.tika.Tika;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import pl.pytlak.photoart.dto.request.UploadRequest;
 import pl.pytlak.photoart.entity.Album;
 import pl.pytlak.photoart.entity.Photo;

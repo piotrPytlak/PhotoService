@@ -1,12 +1,12 @@
 import * as React from "react";
 import {makeStyles} from "@mui/styles";
-import Background from "../../images/background/login/login.jpg";
+import BackgroundImg from "../../images/background/login/login.jpg";
 
 
 const backgroundPhotos = makeStyles({
     backgroundStyles:
         {
-            backgroundImage: "url(" + Background + ")",
+            backgroundImage: "url(" + BackgroundImg + ")",
             position: 'static',
             width: '100vw',
             height: '100vh',
@@ -22,7 +22,7 @@ const backgroundPhotos = makeStyles({
 })
 
 
-export function BackgroundImage() {
+export default function Background() {
 
     const classes = backgroundPhotos();
 

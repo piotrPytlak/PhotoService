@@ -1,24 +1,33 @@
 package pl.pytlak.photoart.entity;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import pl.pytlak.photoart.entitiyKey.FavoriteId;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Data
-@NoArgsConstructor
-public class Favorite implements Serializable {
+@IdClass(FavoriteId.class)
+public class Favorite {
 
     @Id
+    @Column(name = "idUser")
+    private Long userId;
+
+    @Id
+    @Column(name = "idPhoto")
+    private Long photoId;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idUser")
+    @MapsId
     private User user;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idPhoto")
+    @MapsId
     private Photo photo;
 
 

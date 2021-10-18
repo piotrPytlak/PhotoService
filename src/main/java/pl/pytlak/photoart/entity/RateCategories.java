@@ -10,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
 public class RateCategories {
 
     @Id

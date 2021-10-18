@@ -19,7 +19,7 @@ const style = {
 }
 
 
-export function CentreText() {
+export default function CentreText() {
 
 
     return (<>
@@ -34,7 +34,7 @@ export function CentreText() {
                         Join the PhotoArt community, home to tens of billions of <br/> photos and 2 million groups.
                     </h3>
 
-                    <a href='signup' className={classes.buttonLink}>
+                    <a href='register' className={classes.buttonLink}>
                         <Button style={style.buttonSignIn}>
                             Start now!
                         </Button>

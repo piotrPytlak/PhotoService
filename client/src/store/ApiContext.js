@@ -10,7 +10,12 @@ let header = {
 
 }
 
-const serverUrl = 'http://localhost:8080/'
+const serverUrl = 'http://localhost:8080/';
+
+const PermitType = {
+    AUTHENTICATED: false,
+    NO_AUTHENTICATED: true
+}
 
 
 export default function ApiContext({children}) {
@@ -56,13 +61,32 @@ export default function ApiContext({children}) {
             serverUrl + 'register',
             body,
         )
+    }
 
 
+    const loginStatus = async () => {
+
+        const body = {
+            method: 'GET',
+            headers: header,
+            credentials: 'include'
+        }
+
+        const response = await fetch(
+            serverUrl + 'check',
+            body
+        )
+
+        if (response.ok) {
+            return response.json();
+        } else {
+            return {authority: null};
+        }
     }
 
 
     return (
-        <apiContext.Provider value={{login, register, serverUrl}}>
+        <apiContext.Provider value={{login, register,PermitType, serverUrl, loginStatus}}>
             {children}
         </apiContext.Provider>
     )

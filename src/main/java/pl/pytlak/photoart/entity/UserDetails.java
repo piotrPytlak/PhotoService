@@ -9,21 +9,25 @@ import java.io.Serializable;
 
 @Entity
 @Data
-@NoArgsConstructor
 public class UserDetails implements Serializable {
 
     @Id
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    private User user;
+    @Column(name = "id")
+    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idBackgroundPhoto")
-    private Photo backgroundPhoto;
+    @MapsId
+    @JoinColumn(name = "id")
+    private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idAvatarPhoto")
     private Photo avatarPhoto;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idBackgroundPhoto")
+    private Photo backgroundPhoto;
+
 
 }
+

@@ -1,12 +1,12 @@
-import BarComponent from '../components/Login/Bar.js'
-import {BackgroundImage} from '../components/Login/Background.js'
-import SignIn from "../components/Login/LoginForm";
+import Bar from '../components/Login/Bar.js'
+import Background from '../components/Login/Background.js'
+import LoginForm from "../components/Login/LoginForm";
 
 export function LogInPage() {
     return (
         <>
-            <BarComponent/>
-            <BackgroundImage/>
-            <SignIn/>
+            <Bar/>
+            <Background/>
+            <LoginForm/>
         </>)
 }

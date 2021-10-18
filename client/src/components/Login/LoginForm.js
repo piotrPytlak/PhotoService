@@ -15,7 +15,6 @@ import * as React from "react";
 import {useContext, useRef} from "react";
 import {apiContext} from "../../store/ApiContext";
 
-
 const style = {
 
     loginPanelMain: {
@@ -67,10 +66,8 @@ const style = {
 const theme = createTheme();
 
 
-export default function SignIn() {
+export default function LoginForm() {
     const {login} = useContext(apiContext)
-
-
     const refEmail = useRef()
     const refPassword = useRef()
 
@@ -138,7 +135,7 @@ export default function SignIn() {
                             </Button>
 
 
-                            <Link href="http://localhost:3000/signup" variant="body2" style={style.link}>
+                            <Link href="http://localhost:3000/register" variant="body2" style={style.link}>
                                 <p style={style.p}> {"Don't have an account? Sign Up!"}</p>
                             </Link>
 

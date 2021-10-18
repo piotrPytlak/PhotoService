@@ -3,11 +3,13 @@ package pl.pytlak.photoart.security;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.pytlak.photoart.entity.User;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -18,16 +20,19 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+
+        List<GrantedAuthority> list = new ArrayList<>();
+        list.add(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
+        return list;
     }
 
     @Override
-    public String getPassword(){
+    public String getPassword() {
         return user.getPassword();
     }
 
     @Override
-    public String getUsername(){
+    public String getUsername() {
         return user.getEmail();
     }
 

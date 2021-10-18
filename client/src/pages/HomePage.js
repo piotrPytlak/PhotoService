@@ -1,14 +1,21 @@
-import BarComponent from '../components/StartingPage/Bar'
-import {BackgroundSlides} from '../components/StartingPage/BackgroundSlides'
-import {CentreText} from '../components/StartingPage/CentreText'
+import Bar from '../components/StartingPage/Bar'
+import BackgroundSlides from '../components/StartingPage/BackgroundSlides'
+import CentreText from '../components/StartingPage/CentreText'
+import {withRouter} from "react-router-dom";
 
-export function HomePage() {
 
+function HomePage({history}) {
+
+    history.listen((location, action) => {
+        // location is an object like window.location
+        console.log(action, location.pathname, location.state)
+    });
     return (
         <>
-            <BarComponent/>
+            <Bar/>
             <BackgroundSlides/>
             <CentreText/>
         </>
     )
 }
+export default withRouter(HomePage)

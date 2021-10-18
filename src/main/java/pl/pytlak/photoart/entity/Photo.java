@@ -11,7 +11,6 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
 @Builder
 public class Photo {
 

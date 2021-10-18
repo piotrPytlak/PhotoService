@@ -38,6 +38,7 @@ public class RegisterRequest {
     @Getter(AccessLevel.NONE)
     String gender;
 
+
     public String getPassword() {
         return new String(Base64.getDecoder().decode(password));
     }

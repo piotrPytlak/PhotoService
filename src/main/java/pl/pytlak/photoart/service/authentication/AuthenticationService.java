@@ -1,17 +1,19 @@
 package pl.pytlak.photoart.service.authentication;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.pytlak.photoart.dto.request.RegisterRequest;
 import pl.pytlak.photoart.repository.AuthenticationRepository;
-import pl.pytlak.photoart.type.Gender;
 import pl.pytlak.photoart.entity.User;
-import pl.pytlak.photoart.model.AuthenticationModel;
 import pl.pytlak.photoart.repository.UserRepository;
 import pl.pytlak.photoart.security.UserDetailsImpl;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -41,5 +43,14 @@ public class AuthenticationService implements AuthenticationRepository {
 
     }
 
+    public Collection<? extends GrantedAuthority> getCurrentPrincipalAuthorities() {
 
+        try {
+            return ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getAuthorities();
+        } catch (ClassCastException e) {
+            return Collections.emptyList();
+        }
+
+
+    }
 }

@@ -63,13 +63,13 @@ const style = {
 }
 
 
-export default function PrimarySearchAppBar() {
+export default function Bar() {
 
     return (
 
         <AppBar elevation={0} position='absolute' style={style.appBar}>
             <Toolbar style={style.toolBar}>
-                <a href='home'><img style={style.logo} alt={'logo.png'} src={PhotoArt}/></a>
+                <a href='/home'><img style={style.logo} alt={'logo.png'} src={PhotoArt}/></a>
             </Toolbar>
         </AppBar>
 

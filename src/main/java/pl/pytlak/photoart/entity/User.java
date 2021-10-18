@@ -3,6 +3,8 @@ package pl.pytlak.photoart.entity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import pl.pytlak.photoart.type.Gender;
+import pl.pytlak.photoart.type.UserRoles;
+
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -10,7 +12,6 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
 @Table(name = "user_table")
 public class User {
 
@@ -36,10 +37,15 @@ public class User {
     @Column(nullable = false)
     private Integer age;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRoles role;
+
     @CreationTimestamp
     Timestamp creationTime;
 
     @Column()
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
 
@@ -66,8 +72,11 @@ public class User {
         this.lastName = lastName;
         this.password = password;
         this.age = age;
+        this.role = UserRoles.USER;
         this.gender = gender;
     }
 
+    public User() {
 
+    }
 }

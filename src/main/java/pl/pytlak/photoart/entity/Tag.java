@@ -9,7 +9,6 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@NoArgsConstructor
 public class Tag {
 
     @Id

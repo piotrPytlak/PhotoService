@@ -8,12 +8,14 @@ import java.io.Serializable;
 
 @Entity
 @Data
-@NoArgsConstructor
 public class PhotoDetails implements Serializable {
 
     @Id
+    private Long idPhoto;
+
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @MapsId
+    @JoinColumn(name = "idPhoto", referencedColumnName = "id")
     private Photo photo;
 
     @Column

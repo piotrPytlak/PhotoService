@@ -127,7 +127,7 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
     },
 }));
 
-export default function PrimarySearchAppBar() {
+export default function Bar() {
 
     const classes = useStyle();
 
@@ -151,7 +151,7 @@ export default function PrimarySearchAppBar() {
                     <a href='login'  style={style.buttonLink}> <Button style={style.buttonLogIn}>
                         Log In
                     </Button> </a>
-                    <a href='signup'  style={style.buttonLink}>  <Button style={style.buttonSignIn}>
+                    <a href='register'  style={style.buttonLink}>  <Button style={style.buttonSignIn}>
                         Sign Up
                     </Button> </a>
                 </div>
