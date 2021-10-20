@@ -1,7 +1,9 @@
 package pl.pytlak.photoart.service.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import pl.pytlak.photoart.dto.response.SearchUserResponse;
 import pl.pytlak.photoart.entitiyKey.FollowId;
 import pl.pytlak.photoart.entity.Follow;
 import pl.pytlak.photoart.entity.User;
@@ -9,7 +11,9 @@ import pl.pytlak.photoart.repository.FollowRepository;
 import pl.pytlak.photoart.repository.UserRepository;
 import pl.pytlak.photoart.service.authentication.AuthenticationService;
 
-import java.util.function.Consumer;
+import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -23,25 +27,40 @@ public class UserService {
     public void makeFollow(Long userId) throws IllegalArgumentException {
         User user = authenticationService.getCurrentUser();
 
-        // 1. Follow yourself
 
         if (user.getId().equals(userId))
             throw new IllegalArgumentException("You cant follow yourself");
 
-        Consumer<User> createFollow = x -> {
+        FollowId followId = new FollowId(user.getId(), userId);
+
+        User followerUser = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Not found!"));
+
+
+        userRepository.findUserById(userId).ifPresent(x -> {
             Follow follow = Follow.builder()
-                    .idFollowerUser(x.getId())
-                    .idUser(user.getId())
+                    .followId(followId)
+                    .user(user)
+                    .followerUser(followerUser)
                     .build();
 
-            follow = followRepository.save(follow);
-            System.out.println(followRepository.test(follow.getIdFollowerUser(), user.getId()).get().getFollowerUser());
-        };
+            followRepository.save(follow);
+        });
 
-
-        userRepository.findUserById(userId).ifPresent(createFollow);
 
     }
 
 
+    public List<SearchUserResponse> searchUsers(String searchParam) {
+
+        return userRepository.searchByUsername(searchParam, PageRequest.of(0, 15)).stream()
+                .map(x -> SearchUserResponse.builder()
+                        .username((String) x[0])
+                        .followers((long) x[2])
+                        .avatarImgPath((String) x[1])
+                        .build())
+                .collect(Collectors.toList());
+
+
+    }
 }

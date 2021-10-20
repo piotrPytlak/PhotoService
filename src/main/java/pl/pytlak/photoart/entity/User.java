@@ -48,21 +48,19 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Album> albums;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idFollowerUser", referencedColumnName = "id")
     private List<Follow> follows;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    private UserDetails userDetails;
 
 
     public User(String email, String username, String firstName, String lastName, String password, Integer age, Gender gender) {

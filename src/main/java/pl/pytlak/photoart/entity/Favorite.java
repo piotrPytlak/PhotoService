@@ -7,28 +7,29 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@IdClass(FavoriteId.class)
 public class Favorite {
 
-    @Id
-    @Column(name = "idUser")
-    private Long userId;
-
-    @Id
-    @Column(name = "idPhoto")
-    private Long photoId;
+    @EmbeddedId
+    private FavoriteId favoriteId;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId(value = "userId")
     @JoinColumn(name = "idUser")
-    @MapsId
     private User user;
 
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId(value = "photoId")
     @JoinColumn(name = "idPhoto")
-    @MapsId
     private Photo photo;
 
+    public Favorite(FavoriteId favoriteId, User user, Photo photo) {
+        this.favoriteId = favoriteId;
+        this.user = user;
+        this.photo = photo;
+    }
 
+    public Favorite() {
+
+    }
 }

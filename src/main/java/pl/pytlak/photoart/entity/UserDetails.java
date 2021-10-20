@@ -1,23 +1,23 @@
 package pl.pytlak.photoart.entity;
 
-
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Data
-public class UserDetails implements Serializable {
+@Builder
+public class UserDetails {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "userId")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    // Be safe! Drop row in userDetails causes drop associate user.
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @MapsId
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "userId")
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -29,5 +29,15 @@ public class UserDetails implements Serializable {
     private Photo backgroundPhoto;
 
 
+    public UserDetails() {
+
+    }
+
+    public UserDetails(Long id, User user, Photo avatarPhoto, Photo backgroundPhoto) {
+        this.id = id;
+        this.user = user;
+        this.avatarPhoto = avatarPhoto;
+        this.backgroundPhoto = backgroundPhoto;
+    }
 }
 

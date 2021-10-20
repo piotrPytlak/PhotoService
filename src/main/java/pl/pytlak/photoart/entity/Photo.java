@@ -18,7 +18,7 @@ public class Photo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String title;
 
     @CreationTimestamp
@@ -31,21 +31,21 @@ public class Photo {
     @JoinColumn(name = "albumId")
     private Album album;
 
-    @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Tag> tags;
 
-    @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Comment> comments;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn
-    private PhotoDetails photoDetails;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @PrimaryKeyJoinColumn
+//    private PhotoDetails photoDetails;
 
-    private Photo(Long id, String title, Timestamp creationTime, String name, Album album, List<Tag> tags, List<Comment> comments, PhotoDetails photoDetails) {
+    private Photo(Long id, String title, Timestamp creationTime, String name, Album album, List<Tag> tags, List<Comment> comments) {
         this.id = id;
         this.title = title;
         this.creationTime = creationTime;
@@ -53,9 +53,10 @@ public class Photo {
         this.album = album;
         this.tags = tags;
         this.comments = comments;
-        this.photoDetails = photoDetails;
     }
 
-    protected Photo(Long id) {
+
+    public Photo() {
+
     }
 }

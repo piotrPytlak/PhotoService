@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface FollowRepository extends CrudRepository<Follow, FollowId> {
 
-    @Query("SELECT F from Follow F where F.idFollowerUser = ?1 and F.idUser = ?2")
+    @Query("SELECT F from Follow F where F.followerUser.id = ?1 and F.user.id = ?2")
     Optional<Follow> test(Long followerUserId, Long userId);
 }

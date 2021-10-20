@@ -9,34 +9,29 @@ import javax.persistence.*;
 @Entity
 @Data
 @Builder
-@IdClass(FollowId.class)
 public class Follow {
 
-    @Id
-    @Column(name = "idUser")
-    private Long idUser;
-
-    @Id
-    @Column(name = "idFollowerUser")
-    private Long idFollowerUser;
+    @EmbeddedId
+    private FollowId followId;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @MapsId(value = "idUser")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId(value = "userId")
     @JoinColumn(name = "idUser")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @MapsId(value = "idFollowerUser")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId(value = "followerUserId")
     @JoinColumn(name = "idFollowerUser")
     private User followerUser;
 
-    public Follow(Long idUser, Long idFollowerUser, User user, User followerUser) {
-        this.idUser = idUser;
-        this.idFollowerUser = idFollowerUser;
+    public Follow(FollowId followId, User user, User followerUser) {
+        this.followId = followId;
         this.user = user;
         this.followerUser = followerUser;
     }
+
+
 
     public Follow() {
 

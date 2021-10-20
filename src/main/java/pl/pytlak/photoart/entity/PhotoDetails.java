@@ -1,21 +1,21 @@
 package pl.pytlak.photoart.entity;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Data
-public class PhotoDetails implements Serializable {
+@Builder
+public class PhotoDetails {
 
     @Id
-    private Long idPhoto;
+    private Long photoDetailsId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @MapsId
-    @JoinColumn(name = "idPhoto", referencedColumnName = "id")
+    @JoinColumn(name = "photoDetailsId")
     private Photo photo;
 
     @Column
@@ -30,5 +30,15 @@ public class PhotoDetails implements Serializable {
     @Column
     private String Description;
 
+    public PhotoDetails(Long photoDetailsId, Photo photo, String ISO, String camera, String flash, String description) {
+        this.photoDetailsId = photoDetailsId;
+        this.photo = photo;
+        this.ISO = ISO;
+        Camera = camera;
+        Flash = flash;
+        Description = description;
+    }
 
+    public PhotoDetails() {
+    }
 }
