@@ -15,6 +15,7 @@ function HomePage({history}) {
             <Bar/>
             <BackgroundSlides/>
             <CentreText/>
+
         </>
     )
 }

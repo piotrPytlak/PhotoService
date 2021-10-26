@@ -7,6 +7,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import {makeStyles} from "@material-ui/core";
 import Button from "@mui/material/Button";
 import PhotoArt from '../../images/logo/logo_white.png'
+import SearchBar from "../SearchBar/SearchBar";
+import {useCallback, useState} from "react";
 
 
 const style = {
@@ -61,8 +63,8 @@ const style = {
         margin: 0
     },
 
-    buttonLink:{
-        textDecoration:'none'
+    buttonLink: {
+        textDecoration: 'none'
     }
 }
 
@@ -82,7 +84,22 @@ const useStyle = makeStyles({
         marginRight: '120px',
         alignItems: 'center'
     },
-
+    searchBox: {
+        margin: "0 40px",
+        width: "100%",
+        position: "relative"
+    },
+    searchResults: {
+        padding: "64px 10px 10px 10px",
+        backgroundColor: "rgb(241,241,241)",
+        position: "absolute",
+        top: "-8px",
+        borderRadius: 10,
+        width: "100%",
+        zIndex: 300,
+        left: "-10px",
+        boxShadow: "0 0 5px black"
+    }
 });
 
 
@@ -92,15 +109,8 @@ const Search = styled('div')(({theme}) => ({
     '&:hover': {
         backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    minWidth: '200px',
     width: '100%',
     borderRadius: '15px',
-    maxWidth: '1000px',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3)
-    },
 }));
 
 const SearchIconWrapper = styled('div')(({theme}) => ({
@@ -120,9 +130,11 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
         // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
+        minWidth: '200px',
         width: '100%',
+        maxWidth: '1000px',
         [theme.breakpoints.up('md')]: {
-            width: '20ch',
+            width: '100%',
         },
     },
 }));
@@ -130,6 +142,14 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 export default function Bar() {
 
     const classes = useStyle();
+    const [searchParam, setSearchParam] = useState('')
+    const handleInput = useCallback((event) => {
+
+
+        setSearchParam(event.target.value)
+    }, [setSearchParam])
+
+    const x = searchParam.length >= 3;
 
     return (
 
@@ -138,20 +158,35 @@ export default function Bar() {
 
                 <a href='home'> <img style={{maxHeight: '40px', marginLeft: '35px'}} src={PhotoArt}
                                      alt={'Logo'}/></a>
-                <Search>
-                    <SearchIconWrapper>
-                        <SearchIcon/>
-                    </SearchIconWrapper>
-                    <StyledInputBase
-                        placeholder="Search…"
-                        inputProps={{'aria-label': 'search'}}
-                    />
-                </Search>
+
+                <div className={classes.searchBox}>
+                    <Search style={{
+                        zIndex: "400",
+                        border: x ? "1px solid #aaa" : undefined,
+                        backgroundColor: x ? "#ddd" : undefined,
+                        color: x ? "black" : undefined
+                    }}>
+
+                        <SearchIconWrapper>
+                            <SearchIcon/>
+                        </SearchIconWrapper>
+                        <StyledInputBase
+                            style={{width:'100%'}}
+                            onChange={handleInput}
+                            placeholder="Search…"
+                            inputProps={{'aria-label': 'search'}}
+                        />
+                    </Search>
+                    {searchParam.length >= 3 && <div className={classes.searchResults}>
+                        <SearchBar param={searchParam}/>
+                    </div>}
+                </div>
+
                 <div className={classes.buttonsPanel}>
-                    <a href='login'  style={style.buttonLink}> <Button style={style.buttonLogIn}>
+                    <a href='login' style={style.buttonLink}> <Button style={style.buttonLogIn}>
                         Log In
                     </Button> </a>
-                    <a href='register'  style={style.buttonLink}>  <Button style={style.buttonSignIn}>
+                    <a href='register' style={style.buttonLink}> <Button style={style.buttonSignIn}>
                         Sign Up
                     </Button> </a>
                 </div>

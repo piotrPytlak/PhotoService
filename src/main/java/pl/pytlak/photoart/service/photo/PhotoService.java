@@ -45,7 +45,7 @@ public class PhotoService {
         if (!validationService.validationImage(image))
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 
-        URL res = getClass().getClassLoader().getResource("static/images");
+        URL res = getClass().getClassLoader().getResource("static/images/users_photos");
         Path photoPath = Paths.get(res.toURI());
         User user = authenticationService.getCurrentUser();
         String originalFilename = image.getOriginalFilename();
@@ -61,6 +61,9 @@ public class PhotoService {
             Long photoId = add(photo).getId();
             File photoFile = new File(photoPath + "\\" + user.getUsername() + "-" + photoId + "-" + originalFilename);
 
+            photo.setName(photoFile.getName());
+            add(photo);
+
             try {
                 image.transferTo(photoFile);
             } catch (IOException exception) {
@@ -74,7 +77,6 @@ public class PhotoService {
         return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 
     }
-
 
 
 }

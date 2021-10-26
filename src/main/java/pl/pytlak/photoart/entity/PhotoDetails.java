@@ -2,6 +2,7 @@ package pl.pytlak.photoart.entity;
 
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -19,23 +20,23 @@ public class PhotoDetails {
     private Photo photo;
 
     @Column
-    private String ISO;
+    private Integer ISO;
 
     @Column
     private String Camera;
 
     @Column
-    private String Flash;
+    private String Model;
 
-    @Column
+    @Column(columnDefinition = "varchar(4000)")
     private String Description;
 
-    public PhotoDetails(Long photoDetailsId, Photo photo, String ISO, String camera, String flash, String description) {
+    public PhotoDetails(Long photoDetailsId, Photo photo, Integer ISO, String camera, String model, String description) {
         this.photoDetailsId = photoDetailsId;
         this.photo = photo;
         this.ISO = ISO;
         Camera = camera;
-        Flash = flash;
+        Model = model;
         Description = description;
     }
 

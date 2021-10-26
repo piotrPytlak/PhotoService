@@ -18,11 +18,11 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     @Query("SELECT U.username, AP.name, SUM(case when F.followerUser.id is not null then 1  else 0 end) as followersCount " +
             "FROM User U " +
-            "join U.userDetails UD " +
+            "left join U.userDetails UD " +
             "left join UD.avatarPhoto AP " +
             "left join U.follows F " +
-            "where U.username " +
-            "like concat('%', ?1,'%') " +
+            "where upper(U.username) " +
+            "like concat('%', upper(?1),'%') " +
             "GROUP BY U.id, U.username, AP.name " +
             "ORDER BY followersCount DESC ")
     List<Object[]> searchByUsername(String username, PageRequest pageRequest);

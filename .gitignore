@@ -9,6 +9,9 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
+#avatars
+src/main/resources/static/*.png
+
 # Compiled class file
 *.class
 

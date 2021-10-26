@@ -1,4 +1,4 @@
-import {createContext} from "react";
+import {createContext, useRef} from "react";
 
 export const apiContext = createContext(null)
 
@@ -19,6 +19,8 @@ const PermitType = {
 
 
 export default function ApiContext({children}) {
+
+    const searchBuffor = useRef(undefined)
 
     const login = async (email, password) => {
 
@@ -85,8 +87,31 @@ export default function ApiContext({children}) {
     }
 
 
+    const searchBar = async (param) => {
+
+        const urlSearchParams = new URLSearchParams({username: param})
+
+        const body = {
+            method: 'GET',
+            header: header,
+            credentials: 'include'
+        }
+
+        const response = await fetch(
+            serverUrl + 'search?' + urlSearchParams,
+            body
+        )
+
+        if (response.ok)
+            return response.json()
+        else
+            throw new Error("Error!")
+
+    }
+
+
     return (
-        <apiContext.Provider value={{login, register,PermitType, serverUrl, loginStatus}}>
+        <apiContext.Provider value={{login, register, searchBar, PermitType, serverUrl, loginStatus}}>
             {children}
         </apiContext.Provider>
     )

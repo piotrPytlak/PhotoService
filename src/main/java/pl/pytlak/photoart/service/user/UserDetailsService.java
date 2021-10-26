@@ -49,7 +49,16 @@ public class UserDetailsService {
         if (!validationService.validationImage(img))
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 
-        URL res = getClass().getClassLoader().getResource("static/images");
+        String path;
+
+        if (detailsImg == UserDetailsImg.AVATAR)
+            path = "static/images/avatars";
+        else
+            path = "static/images/backgrounds";
+
+
+        URL res = getClass().getClassLoader().getResource(path);
+
         Path photoPath = Paths.get(res.toURI());
         User user = authenticationService.getCurrentUser();
 
@@ -58,61 +67,57 @@ public class UserDetailsService {
                 .build());
 
         File photoFile = new File(photoPath + "\\" + user.getUsername() + "-" + detailsImg.name() + "-" + photo.getId() + "-" + img.getOriginalFilename());
-        photo.setName(photoFile.getAbsolutePath());
+        photo.setName(photoFile.getName());
         photoRepository.save(photo);
 
 
         userDetailsRepository.findById(user.getId()).ifPresentOrElse(x -> {
-            Photo photoToRemove = detailsImg == UserDetailsImg.AVATAR ? x.getAvatarPhoto() : x.getBackgroundPhoto();
-            if (photoToRemove != null) {
-                File file = new File(photoToRemove.getName());
-                if (file.delete()) {
-                    photoRepository.delete(photoToRemove);
-                    worker(() -> x.setAvatarPhoto(photo), () -> x.setBackgroundPhoto(photo), detailsImg);
-                    userDetailsRepository.save(x);
-                } else {
-                    photoFile.delete();
+                    Photo photoToRemove = detailsImg == UserDetailsImg.AVATAR ? x.getAvatarPhoto() : x.getBackgroundPhoto();
+                    if (photoToRemove != null) {
+                        File file = new File(photoToRemove.getName());
+                        if (file.delete()) {
+                            photoRepository.delete(photoToRemove);
+                            worker(() -> x.setAvatarPhoto(photo), () -> x.setBackgroundPhoto(photo), detailsImg);
+                            userDetailsRepository.save(x);
+                        } else {
+                            photoFile.delete();
+                        }
+
+                    } else {
+                        worker(() -> x.setAvatarPhoto(photo), () -> x.setBackgroundPhoto(photo), detailsImg);
+                        userDetailsRepository.save(x);
+                    }
+                }, () ->
+
+                {
+
+                    UserDetails currentUserDetails = detailsImg == UserDetailsImg.AVATAR ?
+                            UserDetails.builder()
+                                    .id(user.getId())
+                                    .user(user)
+                                    .avatarPhoto(photo)
+                                    .build()
+                            :
+                            UserDetails.builder()
+                                    .id(user.getId())
+                                    .user(user)
+                                    .backgroundPhoto(photo)
+                                    .build();
+
+                    userDetailsRepository.save(currentUserDetails);
                 }
-
-            } else {
-                worker(() -> x.setAvatarPhoto(photo), () -> x.setBackgroundPhoto(photo), detailsImg);
-                userDetailsRepository.save(x);
-            }
-        },()->
-
-    {
-
-        UserDetails currentUserDetails = detailsImg == UserDetailsImg.AVATAR ?
-                UserDetails.builder()
-                        .id(user.getId())
-                        .user(user)
-                        .avatarPhoto(photo)
-                        .build()
-                :
-                UserDetails.builder()
-                        .id(user.getId())
-                        .user(user)
-                        .backgroundPhoto(photo)
-                        .build();
-
-        userDetailsRepository.save(currentUserDetails);
-    }
         );
 
-        try
-
-    {
-        img.transferTo(photoFile);
-    } catch(
-    IOException exception)
-
-    {
-        photoService.remove(photo);
-        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-    }
+        try {
+            img.transferTo(photoFile);
+        } catch (
+                IOException exception) {
+            photoService.remove(photo);
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
 
-}
+    }
 
 
 }
