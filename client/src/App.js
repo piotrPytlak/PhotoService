@@ -6,6 +6,7 @@ import {SignUpPage} from "./pages/SignUpPage"
 import HomePage from "./pages/HomePage"
 import SetRoute from "./router/SetRoute";
 import {useContext} from "react";
+import {DashboardPage} from "./pages/DashboardPage";
 
 
 export function App() {
@@ -22,9 +23,9 @@ export function App() {
                 <SetRoute path="/register" alternativePath={"/home"}
                           isPermit={PermitType.NO_AUTHENTICATED}
                           component={SignUpPage}/>
-                <SetRoute path="/user/dashboard"
+                <SetRoute path="/dashboard"
                           alternativePath={"/login"}
-                          component={HomePage}/>
+                          component={DashboardPage}/>
 
             </Switch>
         </Router>

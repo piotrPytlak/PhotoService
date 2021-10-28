@@ -24,7 +24,7 @@ const style = {
 
     buttonLogIn: {
         color: '#fff',
-        marginLeft: '30px',
+        marginLeft: '-30px',
         marginRight: '25px',
         marginTop: '5px',
         marginBottom: '5px',

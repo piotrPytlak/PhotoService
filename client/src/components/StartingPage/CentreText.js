@@ -31,7 +31,8 @@ export default function CentreText() {
                     </h1>
 
                     <h3 className={classes.lineTwo}>
-                        Join the PhotoArt community, home to tens of billions of <br/> photos and 2 million groups.
+                        {/*Join the PhotoArt community, home to tens of billions of <br/> photos and 2 million groups.*/}
+                        Join the PhotoArt community, home for anyone <br/> loves photography.
                     </h3>
 
                     <a href='register' className={classes.buttonLink}>

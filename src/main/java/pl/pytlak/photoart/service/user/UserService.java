@@ -13,6 +13,7 @@ import pl.pytlak.photoart.service.authentication.AuthenticationService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -63,4 +64,10 @@ public class UserService {
 
 
     }
+
+    public Optional<User> findUserById(Long userId){
+        return userRepository.findById(userId);
+    }
+
+
 }
