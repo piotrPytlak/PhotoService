@@ -43,6 +43,11 @@ public class AuthenticationService implements AuthenticationRepository {
 
     }
 
+    public boolean isAuthenticated() {
+        return !SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString().equals("anonymousUser");
+
+    }
+
     public Collection<? extends GrantedAuthority> getCurrentPrincipalAuthorities() {
 
         try {

@@ -1,9 +1,10 @@
 import {Avatar, LinearProgress, List, ListItem, ListItemText} from "@mui/material"
-import {useContext, useEffect, useState} from "react"
+import {useCallback, useContext, useEffect, useState} from "react"
 import {apiContext} from "../../store/ApiContext"
 import {Scrollbars} from "react-custom-scrollbars"
 import {makeStyles} from "@mui/styles";
 import GroupIcon from '@mui/icons-material/Group';
+import {Redirect} from "react-router-dom";
 
 const style = {
     listItem: {
@@ -49,8 +50,14 @@ export default function SearchBar(props) {
     const {serverUrl, searchBar} = useContext(apiContext)
     const [user, setUser] = useState([])
     const [load, setLoad] = useState(false)
+    const [selectedUser, setSelectedUser] = useState()
     const {param} = props
     const classes = styles()
+
+
+    const redirectUserPage = useCallback((user) => {
+        setSelectedUser(user)
+    }, [setSelectedUser])
 
 
     useEffect(() => {
@@ -59,40 +66,42 @@ export default function SearchBar(props) {
             .then(x => setUser(x))
             .finally(setLoad(false))
 
-    }, [param]);
+    }, [param, searchBar]);
 
 
     return (
-        <div style={{height: 102 * user.length, maxHeight: '40vh'}}>
-            <Scrollbars style={style.scroll}>
-                <List>
-                    {user.map((x, index) =>
-                        (
-                            <ListItem key={index + 'listItem'} style={style.listItem}>
-                                <Avatar sx={style.listElement}
-                                        key={index + 'avatar'}
-                                        src={serverUrl + "images/" + x.avatarImgPath}/>
-                                <ListItemText
-                                    classes={{primary: classes.listItemText, secondary: classes.listItemTextSec}}
-                                    primary={x.username}
-                                    secondary={(
-                                        <>
-                                            <GroupIcon style={style.icon}/>
-                                            <span>{x.followers + ' followers'}</span>
-                                        </>
-                                    )}/>
-                            </ListItem>
+        <>
+            <div style={{height: 102 * user.length, maxHeight: '40vh'}}>
+                <Scrollbars style={style.scroll}>
+                    <List>
+                        {user.map((x, index) =>
+                            (
+                                <ListItem button onClick={redirectUserPage.bind(this,x)} key={index + 'listItem'}
+                                          style={style.listItem}>
+                                    <Avatar sx={style.listElement}
+                                            key={index + 'avatar'}
+                                            src={serverUrl + "images/" + x.avatarImgPath}/>
+                                    <ListItemText
+                                        classes={{primary: classes.listItemText, secondary: classes.listItemTextSec}}
+                                        primary={x.username}
+                                        secondary={(
+                                            <>
+                                                <GroupIcon style={style.icon}/>
+                                                <span>{x.followers + ' followers'}</span>
+                                            </>
+                                        )}/>
+                                </ListItem>
+                            )
                         )
-                    )
+                        }
+                    </List>
+                    {load &&
+                    <LinearProgress/>
                     }
-                </List>
-                {load &&
-                <LinearProgress/>
-                }
-            </Scrollbars>
-        </div>
-
+                </Scrollbars>
+            </div>
+            {!!selectedUser && < Redirect to={`/user/${selectedUser.userId}`}/>}
+        </>
     )
-
 
 }

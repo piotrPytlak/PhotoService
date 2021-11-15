@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.pytlak.photoart.dto.request.LoginRequest;
 import pl.pytlak.photoart.dto.request.RegisterRequest;
 import pl.pytlak.photoart.dto.response.SearchUserResponse;
+import pl.pytlak.photoart.dto.response.UserInformation;
 import pl.pytlak.photoart.entity.User;
 import pl.pytlak.photoart.service.photo.PhotoService;
 import pl.pytlak.photoart.service.user.UserDetailsService;
@@ -24,6 +25,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/user")
 @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 public class UserController {
 
@@ -37,38 +39,33 @@ public class UserController {
             return new ResponseEntity<>(userService.searchUsers(searchParam), HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
     }
-
 
     @PutMapping("/follow/{userId}")
     public void follow(@PathVariable("userId") @NotBlank Long userId) {
         userService.makeFollow(userId);
     }
 
-    @PostMapping("/user/uploadAvatar")
-    public ResponseEntity<Object> uploadAvatar(@RequestParam("imageFile") MultipartFile avatar) throws IOException, URISyntaxException {
+    @PostMapping("/uploadAvatar")
+    public ResponseEntity<?> uploadAvatar(@RequestParam("imageFile") MultipartFile avatar) throws IOException, URISyntaxException {
         return userDetailsService.uploadUserDetailsImg(avatar, UserDetailsImg.AVATAR);
     }
 
-    @PostMapping("/user/uploadBackground")
-    public ResponseEntity<Object> uploadBackground(@RequestParam("imageFile") MultipartFile background) throws IOException, URISyntaxException {
+    @PostMapping("/uploadBackground")
+    public ResponseEntity<?> uploadBackground(@RequestParam("imageFile") MultipartFile background) throws IOException, URISyntaxException {
         return userDetailsService.uploadUserDetailsImg(background, UserDetailsImg.BACKGROUND);
     }
 
-    @PostMapping("/login")
-    public void login(@Valid @RequestBody LoginRequest loginRequest) {
+
+    @GetMapping("/getUserInformation/{userId}")
+    public ResponseEntity<UserInformation> getUserInformation(@PathVariable("userId") @NotBlank Long userId) {
+        return userDetailsService.getUserInformation(userId);
+
     }
 
-    @GetMapping("/logout")
-    public void logout() {
-        SecurityContextHolder.getContext().setAuthentication(null);
-    }
-
-
-    @PostMapping("/register")
-    public void register(@Valid @RequestBody RegisterRequest registerRequest) {
-
+    @GetMapping("/getCurrentUserInformation")
+    public ResponseEntity<UserInformation> getCurrentUserInformation() {
+        return userDetailsService.getCurrentUser();
     }
 
 

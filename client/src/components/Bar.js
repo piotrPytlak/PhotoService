@@ -1,17 +1,20 @@
 import * as React from 'react';
-import {useCallback, useState} from 'react';
+import {useCallback, useContext, useRef, useState} from 'react';
 import {alpha, styled} from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import {makeStyles} from "@material-ui/core";
-import PhotoArt from '../../images/logo/logo_white.png'
-import SearchBar from "../SearchBar/SearchBar";
+import {ClickAwayListener, makeStyles} from "@material-ui/core";
+import PhotoArt from '../images/logo/logo_white.png'
+import SearchBar from "./SearchBar/SearchBar";
 import UploadIcon from '@mui/icons-material/Upload';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import {Avatar} from "@mui/material";
-import BackgroundImg from "../../images/background/login/login.jpg";
+import LogoutIcon from '@mui/icons-material/Logout';
+import {Avatar, Box, IconButton} from "@mui/material";
+import {apiContext} from "../store/ApiContext";
+import {useLocation} from "react-router-dom";
+import Button from "@mui/material/Button";
 
 
 const style = {
@@ -144,26 +147,34 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
     },
 }));
 
-export default function Bar() {
 
-    const classes = useStyle();
+export default function Bar(props) {
+
+    const classes = useStyle()
+    const searchInput = useRef()
     const [searchParam, setSearchParam] = useState('')
+    const {serverUrl} = useContext(apiContext)
+    const {user} = props;
+    const currentPath = useLocation()
+
+
     const handleInput = useCallback((event) => {
 
-
         setSearchParam(event.target.value)
+
     }, [setSearchParam])
 
-    const x = searchParam.length >= 3;
 
-    return (
+    const onClickAwayInput = useCallback(() => {
+            setSearchParam('')
+            searchInput.current.value = ''
+        }, [setSearchParam, searchInput]
+    )
 
-        <AppBar elevation={0} position='absolute' style={style.appBar}>
-            <Toolbar style={style.toolBar}>
-
-                <a href='home'> <img style={{maxHeight: '40px', marginLeft: '35px'}} src={PhotoArt}
-                                     alt={'Logo'}/></a>
-
+    const x = searchParam.length >= 3; // do not touch!
+    const searchElement = () => (
+        <>
+            <ClickAwayListener onClickAway={onClickAwayInput}>
                 <div className={classes.searchBox}>
                     <Search style={{
                         zIndex: "400",
@@ -176,10 +187,12 @@ export default function Bar() {
                             <SearchIcon/>
                         </SearchIconWrapper>
                         <StyledInputBase
+                            inputRef={searchInput}
                             style={{width: '100%'}}
                             onChange={handleInput}
                             placeholder="Search…"
                             inputProps={{'aria-label': 'search'}}
+
                         />
                     </Search>
 
@@ -188,20 +201,73 @@ export default function Bar() {
                         <SearchBar param={searchParam}/>
                     </div>}
                 </div>
-
-                <div style={{display: 'flex', alignItems: 'center', marginRight: '60px'}}>
-                    <UploadIcon style={{fontSize: "xxx-large", paddingRight: '10px'}}/>
-                    <NotificationsIcon style={{fontSize: 'xxx-large', paddingRight: '40px'}}/>
-                    <Avatar sx={style.listElement}
-                        // key={index + 'avatar'}
-                            src={BackgroundImg} //test
-                            style={{}}/>
+            </ClickAwayListener>
+        </>
+    )
 
 
-                </div>
+    const renderBarTools = () => {
+        if (currentPath.pathname.startsWith('/home'))
+            return (
+                <>
+                    {searchElement()}
+                    <div className={classes.buttonsPanel}>
+                        <a href='login' style={style.buttonLink}> <Button style={style.buttonLogIn}>
+                            Log In
+                        </Button> </a>
+                        <a href='register' style={style.buttonLink}> <Button style={style.buttonSignIn}>
+                            Sign Up
+                        </Button> </a>
+                    </div>
+                </>
+            )
+        else if (currentPath.pathname.startsWith('/user'))
+            return (
+                <>
+                    {searchElement()}
+                    <div style={{display: 'flex', alignItems: 'center', marginRight: '60px'}}>
+                        <Box>
+                            <IconButton size={"large"} color={"inherit"} onClick={() => console.log("fds")}>
+                                <UploadIcon fontSize={"large"}/>
+                            </IconButton>
+                        </Box>
+                        <Box mr="30px">
+                            <IconButton size={"large"} color={"inherit"} onClick={() => console.log("fsdfds")}>
+                                <NotificationsIcon fontSize={"large"}/>
+                            </IconButton>
+                        </Box>
+                        <IconButton>
+                            <Avatar sx={style.listElement}
+                                    src={user?.avatarPath}/>
+                        </IconButton>
+                        <Box>
+                            <IconButton size={"large"} color={"inherit"}>
+                                <LogoutIcon fontSize={"large"}/>
+                            </IconButton>
+                        </Box>
+                    </div>
+                </>
 
+            )
+        else
+            return (<> </>)
+
+
+    }
+
+
+    return (
+
+        <AppBar elevation={0} position='absolute'
+                style={{backgroundColor: currentPath.pathname.startsWith("/user") ? "black" : "rgba(0,0,0,0.5)"}}>
+            <Toolbar style={style.toolBar}>
+
+                <a href='home'> <img style={{maxHeight: '40px', marginLeft: '35px'}} src={PhotoArt}
+                                     alt={'Logo'}/></a>
+                {renderBarTools()}
             </Toolbar>
         </AppBar>
 
     );
 }
+

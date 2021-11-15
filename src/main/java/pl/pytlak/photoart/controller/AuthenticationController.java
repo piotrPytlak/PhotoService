@@ -4,8 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import pl.pytlak.photoart.dto.request.LoginRequest;
+import pl.pytlak.photoart.dto.request.RegisterRequest;
 import pl.pytlak.photoart.service.authentication.AuthenticationService;
+
+import javax.validation.Valid;
 
 @SuppressWarnings("unchecked")
 @RestController
@@ -22,6 +27,22 @@ public class AuthenticationController {
                 .findAny()
                 .map(x -> new ResponseEntity(x, HttpStatus.OK))
                 .orElse(new ResponseEntity(HttpStatus.UNAUTHORIZED));
+    }
+
+
+    @PostMapping("/login")
+    public void login(@Valid @RequestBody LoginRequest loginRequest) {
+    }
+
+    @GetMapping("/logout")
+    public void logout() {
+        SecurityContextHolder.clearContext();
+    }
+
+
+    @PostMapping("/register")
+    public void register(@Valid @RequestBody RegisterRequest registerRequest) {
+
     }
 
 

@@ -12,8 +12,10 @@ import {
 import {ThemeProvider} from "@emotion/react";
 import Button from "@mui/material/Button";
 import * as React from "react";
-import {useContext, useRef} from "react";
+import {useContext, useRef, useState} from "react";
 import {apiContext} from "../../store/ApiContext";
+import {userContext} from "../../store/UserContext";
+import {Redirect} from "react-router-dom";
 
 const style = {
 
@@ -58,7 +60,7 @@ const style = {
     },
 
     logInButton: {
-        backgroundColor: 'white'
+        backgroundColor: "#fea796"
     }
 }
 
@@ -70,81 +72,89 @@ export default function LoginForm() {
     const {login} = useContext(apiContext)
     const refEmail = useRef()
     const refPassword = useRef()
+    const {loadUser, currentUser} = useContext(userContext)
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
 
     const handleSubmit = (event) => {
         event.preventDefault()
         login(refEmail.current.value, refPassword.current.value)
-            .then()
-            .catch((error) => console.log(error))
-
+            .then(status => {
+                    status === 200 && loadUser().then(() => {
+                        setIsAuthenticated(true)
+                    })
+                }
+            )
 
     };
 
     return (
-        <div style={style.loginPanelMain}>
-            <ThemeProvider theme={theme}>
-                <Container component="main" maxWidth="xs" style={style.loginPanel}>
-                    <CssBaseline/>
-                    <Box
-                        sx={{
-                            marginTop: 8,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <div style={style.logIn}>
-                            <Typography component="h1" variant="h5">
-                                <b>Log in to PhotoArt</b>
+        <>
+            <div style={style.loginPanelMain}>
+                <ThemeProvider theme={theme}>
+                    <Container component="main" maxWidth="xs" style={style.loginPanel}>
+                        <CssBaseline/>
+                        <Box
+                            sx={{
+                                marginTop: 8,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <div style={style.logIn}>
+                                <Typography component="h1" variant="h5">
+                                    <b>Log in to PhotoArt</b>
 
-                            </Typography>
+                                </Typography>
 
-                        </div>
-                        <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
-                            <TextField inputRef={refEmail}
-                                       margin="normal"
-                                       required
-                                       fullWidth
-                                       id="email"
-                                       label="Email Address"
-                                       name="email"
-                                       autoComplete="email"
-                                       autoFocus
-                            />
-                            <TextField inputRef={refPassword}
-                                       margin="normal"
-                                       required
-                                       fullWidth
-                                       name="password"
-                                       label="Password"
-                                       type="password"
-                                       id="password"
-                                       autoComplete="current-password"
-                            />
-                            <FormControlLabel
-                                control={<Checkbox value="remember" color="primary"/>}
-                                label="Remember me"
-                            />
-                            <Button style={style.logInButton}
-                                    type="file"
-                                    size="large"
-                                    fullWidth
-                                    variant="contained"
-                                    sx={{mt: 3, mb: 2}}
-                            >
-                                Log in
-                            </Button>
+                            </div>
+                            <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
+                                <TextField inputRef={refEmail}
+                                           margin="normal"
+                                           required
+                                           fullWidth
+                                           id="email"
+                                           label="Email Address"
+                                           name="email"
+                                           autoComplete="email"
+                                           autoFocus
+                                />
+                                <TextField inputRef={refPassword}
+                                           margin="normal"
+                                           required
+                                           fullWidth
+                                           name="password"
+                                           label="Password"
+                                           type="password"
+                                           id="password"
+                                           autoComplete="current-password"
+                                />
+                                <FormControlLabel
+                                    control={<Checkbox value="remember" color="primary"/>}
+                                    label="Remember me"
+                                />
+                                <Button style={style.logInButton}
+                                        type="file"
+                                        size="large"
+                                        fullWidth
+                                        variant="contained"
+                                        sx={{mt: 3, mb: 2}}
+                                >
+                                    Log in
+                                </Button>
+
+                                <Link href="http://localhost:3000/register" variant="body2" style={style.link}>
+                                    <p style={style.p}> {"Don't have an account? Sign Up!"}</p>
+                                </Link>
 
 
-                            <Link href="http://localhost:3000/register" variant="body2" style={style.link}>
-                                <p style={style.p}> {"Don't have an account? Sign Up!"}</p>
-                            </Link>
-
-
+                            </Box>
                         </Box>
-                    </Box>
-                </Container>
-            </ThemeProvider>
-        </div>
+                    </Container>
+                </ThemeProvider>
+            </div>
+
+            {!!isAuthenticated && < Redirect to={`/user/${currentUser.userId}`}/>}
+        </>
     );
 }

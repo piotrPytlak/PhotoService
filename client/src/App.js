@@ -4,9 +4,9 @@ import {BrowserRouter as Router, Switch} from "react-router-dom"
 import {LogInPage} from "./pages/LogInPage"
 import {SignUpPage} from "./pages/SignUpPage"
 import HomePage from "./pages/HomePage"
-import SetRoute from "./router/SetRoute";
-import {useContext} from "react";
-import {DashboardPage} from "./pages/DashboardPage";
+import SetRoute from "./router/SetRoute"
+import {useContext} from "react"
+import {UserPage} from "./pages/UserPage"
 
 
 export function App() {
@@ -23,13 +23,12 @@ export function App() {
                 <SetRoute path="/register" alternativePath={"/home"}
                           isPermit={PermitType.NO_AUTHENTICATED}
                           component={SignUpPage}/>
-                <SetRoute path="/dashboard"
+                <SetRoute path="/user"
                           alternativePath={"/login"}
-                          component={DashboardPage}/>
+                          component={UserPage}/>
 
             </Switch>
         </Router>
-
 
     )
 }

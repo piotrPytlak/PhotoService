@@ -56,6 +56,7 @@ public class UserService {
 
         return userRepository.searchByUsername(searchParam, PageRequest.of(0, 15)).stream()
                 .map(x -> SearchUserResponse.builder()
+                        .userId((Long) x[3])
                         .username((String) x[0])
                         .followers((long) x[2])
                         .avatarImgPath((String) x[1])
@@ -65,7 +66,7 @@ public class UserService {
 
     }
 
-    public Optional<User> findUserById(Long userId){
+    public Optional<User> findUserById(Long userId) {
         return userRepository.findById(userId);
     }
 

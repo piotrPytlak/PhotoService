@@ -5,11 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pl.pytlak.photoart.dto.response.UserInformation;
 import pl.pytlak.photoart.entity.Photo;
 import pl.pytlak.photoart.entity.User;
 import pl.pytlak.photoart.entity.UserDetails;
 import pl.pytlak.photoart.repository.PhotoRepository;
 import pl.pytlak.photoart.repository.UserDetailsRepository;
+import pl.pytlak.photoart.repository.UserRepository;
 import pl.pytlak.photoart.service.Validation.ValidationService;
 import pl.pytlak.photoart.service.authentication.AuthenticationService;
 import pl.pytlak.photoart.service.photo.PhotoService;
@@ -33,6 +35,8 @@ public class UserDetailsService {
     private final AuthenticationService authenticationService;
     private final PhotoService photoService;
     private final UserDetailsRepository userDetailsRepository;
+    private final UserService userService;
+    private final UserRepository userRepository;
 
 
     private void worker(Runnable runIfAvatar, Runnable runIfBackGround, UserDetailsImg detailsImg) {
@@ -44,7 +48,7 @@ public class UserDetailsService {
     }
 
     @Transactional
-    public ResponseEntity<Object> uploadUserDetailsImg(MultipartFile img, UserDetailsImg detailsImg) throws IOException, URISyntaxException {
+    public ResponseEntity<?> uploadUserDetailsImg(MultipartFile img, UserDetailsImg detailsImg) throws IOException, URISyntaxException {
 
         if (!validationService.validationImage(img))
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
@@ -120,4 +124,36 @@ public class UserDetailsService {
     }
 
 
+    public ResponseEntity<UserInformation> getUserInformation(Long userId) {
+        Long currentUserId = authenticationService.isAuthenticated() ? authenticationService.getCurrentUser().getId() : null;
+
+        UserInformation userInformation = userRepository.getAllUserInformation(userId)
+                .map(x -> UserInformation.builder()
+                        .userId(x.getUserId())
+                        .aboutMe(x.getAboutMe())
+                        .albumCount(x.getAlbumCount())
+                        .avatarPath(x.getAvatarPath())
+                        .backgroundPath(x.getBackgroundPath())
+                        .firstName(x.getFirstName())
+                        .lastName(x.getLastName())
+                        .userAge(x.getUserAge())
+                        .followers(x.getFollowers())
+                        .following(x.getFollowing())
+                        .photoCount(x.getPhotoCount())
+                        .albumCount(x.getAlbumCount())
+                        .username(x.getUsername())
+                        .isYourAccount(currentUserId == x.getUserId())
+                        .build()).orElse(null);
+        return userInformation != null ? new ResponseEntity<>(userInformation, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    }
+
+
+    public ResponseEntity<UserInformation> getCurrentUser() {
+        Long currentUserId = authenticationService.getCurrentUser().getId();
+
+        return getUserInformation(currentUserId);
+
+    }
 }
+

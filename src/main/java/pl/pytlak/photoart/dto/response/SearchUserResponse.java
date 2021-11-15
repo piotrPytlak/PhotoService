@@ -10,11 +10,13 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SearchUserResponse {
 
+    Long userId;
     String username;
     String avatarImgPath;
     Long followers;
 
-    public SearchUserResponse(String username, String avatarImgPath, Long followers) {
+    public SearchUserResponse(Long userId, String username, String avatarImgPath, Long followers) {
+        this.userId = userId;
         this.username = username;
         this.avatarImgPath = avatarImgPath;
         this.followers = followers;

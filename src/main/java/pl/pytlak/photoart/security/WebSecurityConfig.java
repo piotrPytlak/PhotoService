@@ -34,21 +34,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .cors()
                 .and()
-                .httpBasic()
-                .and()
                 .authorizeRequests()
                 .antMatchers(
                         "/login",
                         "/register",
+                        "/user/getUserInformation/*",
                         "/check",
-                        "/search",
+                        "/user/search",
                         "/images/**",
                         "/v2/api-docs",
                         "/configuration/ui",
                         "/swagger-resources/**",
                         "/configuration/security",
                         "/swagger-ui.html",
-                        "/webjars/**").permitAll()
+                        "/webjars/**")
+                .permitAll()
                 .anyRequest().authenticated()
                 .and().addFilter(registerFilter())
                 .addFilter(filter()).exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))

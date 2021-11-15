@@ -14,7 +14,7 @@ public class UserDetails {
     @Column(name = "userId")
     private Long id;
 
-    // Be safe! Drop row in userDetails causes drop associate user.
+    // Drop row in userDetails causes drop associate user.
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @MapsId
     @JoinColumn(name = "userId")
@@ -28,16 +28,19 @@ public class UserDetails {
     @JoinColumn(name = "idBackgroundPhoto")
     private Photo backgroundPhoto;
 
+    @Column(columnDefinition = "varchar(10485760)")
+    private String aboutMe;
 
     public UserDetails() {
 
     }
 
-    public UserDetails(Long id, User user, Photo avatarPhoto, Photo backgroundPhoto) {
+    public UserDetails(Long id, User user, Photo avatarPhoto, Photo backgroundPhoto, String aboutMe) {
         this.id = id;
         this.user = user;
         this.avatarPhoto = avatarPhoto;
         this.backgroundPhoto = backgroundPhoto;
+        this.aboutMe = aboutMe;
     }
 }
 

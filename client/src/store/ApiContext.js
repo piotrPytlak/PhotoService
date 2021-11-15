@@ -1,4 +1,4 @@
-import {createContext, useRef} from "react";
+import {createContext} from "react";
 
 export const apiContext = createContext(null)
 
@@ -20,8 +20,6 @@ const PermitType = {
 
 export default function ApiContext({children}) {
 
-    const searchBuffor = useRef(undefined)
-
     const login = async (email, password) => {
 
         const credentials = {
@@ -40,13 +38,7 @@ export default function ApiContext({children}) {
             serverUrl + 'login',
             body,
         )
-        if (response.ok) {
-            console.log("OK")
-            return response.json()
-        } else {
-            console.log("ERROR")
-            return response.status
-        }
+        return response.status
 
     }
 
@@ -98,7 +90,7 @@ export default function ApiContext({children}) {
         }
 
         const response = await fetch(
-            serverUrl + 'search?' + urlSearchParams,
+            serverUrl + 'user/search?' + urlSearchParams,
             body
         )
 
@@ -110,8 +102,47 @@ export default function ApiContext({children}) {
     }
 
 
+    const userDetails = async (param) => {
+        const body = {
+            method: 'GET',
+            header: header,
+            credentials: 'include'
+        }
+
+        const response = await fetch(
+            serverUrl + `user/getUserInformation/${param}`,
+            body
+        )
+
+        if (response.ok)
+            return response.json()
+        else
+            throw new Error("Error!")
+    }
+
+
+    const currentUserDetails = async (param) => {
+        const body = {
+            method: 'GET',
+            header: header,
+            credentials: 'include'
+        }
+
+        const response = await fetch(
+            serverUrl + `user/getCurrentUserInformation`,
+            body
+        )
+
+        if (response.ok)
+            return response.json()
+        else
+            throw new Error("Error!")
+    }
+
+
     return (
-        <apiContext.Provider value={{login, register, searchBar, PermitType, serverUrl, loginStatus}}>
+        <apiContext.Provider
+            value={{login, register, searchBar, PermitType, serverUrl, loginStatus, userDetails, currentUserDetails}}>
             {children}
         </apiContext.Provider>
     )
