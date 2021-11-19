@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useCallback, useContext, useRef, useState} from 'react';
+import {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {alpha, styled} from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,6 +15,7 @@ import {Avatar, Box, IconButton} from "@mui/material";
 import {apiContext} from "../store/ApiContext";
 import {useLocation} from "react-router-dom";
 import Button from "@mui/material/Button";
+import {userContext} from "../store/UserContext";
 
 
 const style = {
@@ -154,9 +155,14 @@ export default function Bar(props) {
     const searchInput = useRef()
     const [searchParam, setSearchParam] = useState('')
     const {serverUrl} = useContext(apiContext)
+    const {currentUser, loadUser} = useContext(userContext)
     const {user} = props;
     const currentPath = useLocation()
 
+
+    useEffect(() => {
+        currentPath.pathname.startsWith('/user') && loadUser();
+    }, [currentPath, loadUser])
 
     const handleInput = useCallback((event) => {
 
@@ -227,18 +233,18 @@ export default function Bar(props) {
                     {searchElement()}
                     <div style={{display: 'flex', alignItems: 'center', marginRight: '60px'}}>
                         <Box>
-                            <IconButton size={"large"} color={"inherit"} onClick={() => console.log("fds")}>
+                            <IconButton size={"large"} color={"inherit"}>
                                 <UploadIcon fontSize={"large"}/>
                             </IconButton>
                         </Box>
                         <Box mr="30px">
-                            <IconButton size={"large"} color={"inherit"} onClick={() => console.log("fsdfds")}>
+                            <IconButton size={"large"} color={"inherit"}>
                                 <NotificationsIcon fontSize={"large"}/>
                             </IconButton>
                         </Box>
                         <IconButton>
                             <Avatar sx={style.listElement}
-                                    src={user?.avatarPath}/>
+                                    src={serverUrl + "images/" + currentUser?.avatarPath}/>
                         </IconButton>
                         <Box>
                             <IconButton size={"large"} color={"inherit"}>

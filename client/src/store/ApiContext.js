@@ -121,7 +121,7 @@ export default function ApiContext({children}) {
     }
 
 
-    const currentUserDetails = async (param) => {
+    const currentUserDetails = async () => {
         const body = {
             method: 'GET',
             header: header,
