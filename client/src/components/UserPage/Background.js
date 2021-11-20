@@ -7,8 +7,9 @@ const backgroundPhotos = makeStyles({
         {
             backgroundColor: '#d6d6d6',
             position: 'static',
-            width: '100vw',
-            height: '100vh',
+            maxWidth: '100vw',
+            width: '100%',
+            height: 'auto',
             top: '0px',
             left: '0px',
             color: 'transparent',
@@ -21,10 +22,16 @@ const backgroundPhotos = makeStyles({
 })
 
 
-export default function Background() {
+export default function Background({children}) {
 
     const classes = backgroundPhotos();
 
-    return <div className={classes.backgroundStyles}/>
+    return (
+        <div className={classes.backgroundStyles}>
+            {
+                children
+            }
+        </div>
+    )
 }
 

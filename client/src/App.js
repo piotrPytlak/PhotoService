@@ -23,7 +23,7 @@ export function App() {
                 <SetRoute path="/register" alternativePath={"/home"}
                           isPermit={PermitType.NO_AUTHENTICATED}
                           component={SignUpPage}/>
-                <SetRoute path="/user"
+                <SetRoute path="/user/:userId"
                           alternativePath={"/login"}
                           component={UserPage}/>
 

@@ -264,7 +264,7 @@ export default function Bar(props) {
 
     return (
 
-        <AppBar elevation={0} position='absolute'
+        <AppBar elevation={0} position={currentPath.pathname.startsWith("/user") ? 'static' : 'absolute'}
                 style={{backgroundColor: currentPath.pathname.startsWith("/user") ? "black" : "rgba(0,0,0,0.5)"}}>
             <Toolbar style={style.toolBar}>
 
