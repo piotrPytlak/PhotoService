@@ -62,6 +62,25 @@ export default function ApiContext({children}) {
         }
     }
 
+    const userAlbums = async (param) => {
+        const body = {
+            method: 'GET',
+            headers: header,
+            credentials: 'include'
+        }
+
+        const response = await fetch(
+            serverUrl + 'userAlbums/' + param,
+            body
+        )
+
+        if (response.ok) {
+            return response.json();
+        } else
+            return [];
+    }
+
+
     const userPhotosLoad = async (userId, lastPhotoId) => {
 
         const urlUserId = new URLSearchParams({
@@ -72,7 +91,7 @@ export default function ApiContext({children}) {
         const body = {
             method: 'GET',
             headers: header,
-            credentials: 'include'
+            credentials: 'include',
         }
 
         const response = await fetch(
@@ -146,14 +165,12 @@ export default function ApiContext({children}) {
 
         const body = {
             method: 'GET',
-            header: header,
+            headers: header,
             credentials: 'include'
         }
 
         const response = await fetch(
-            serverUrl + 'user/search?' + urlSearchParams,
-            body
-        )
+            serverUrl + 'user/search?' + urlSearchParams, body)
 
         if (response.ok)
             return response.json()
@@ -201,20 +218,40 @@ export default function ApiContext({children}) {
     }
 
 
+    const addPhoto = async (form) => {
+
+        const body = {
+            method: 'POST',
+            headers: header,
+            credentials: 'include',
+            body: JSON.stringify(form),
+        }
+
+        const response = await fetch(
+            serverUrl + 'addPhoto',
+            body
+        )
+
+        return response.status;
+
+    }
+
     return (
         <apiContext.Provider
             value={{
+                addPhoto,
                 login,
                 register,
                 searchBar,
                 PermitType,
+                userAlbums,
                 serverUrl,
                 userPhotos,
                 userPhotosLoad,
                 loginStatus,
                 userDetails,
                 logout,
-                currentUserDetails
+                currentUserDetails,
             }}>
             {children}
         </apiContext.Provider>

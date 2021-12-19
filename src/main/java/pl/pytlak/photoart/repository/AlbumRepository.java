@@ -29,4 +29,11 @@ public interface AlbumRepository extends CrudRepository<Album, Long> {
     @Query("SELECT A from Album A where A.user.id = ?1 and A.id = ?2")
     Optional<Album> getLastAlbum(Long userId, Long albumId);
 
+
+    @Query("select A from Album A where A.id=?1 and A.user.id=?2")
+    Optional<Album> getAlbumsByIdAndUserId(Long albumId, Long userId);
+
+    @Query("select A from Album A where A.name=?1 and  A.user.id=?2")
+    Optional<Album> findAlbumByNameAndUserId(String name, Long userId);
+
 }

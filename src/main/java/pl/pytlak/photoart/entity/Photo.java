@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 public class Photo {
 
@@ -29,8 +30,7 @@ public class Photo {
 
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id", referencedColumnName = "photoDetailsId")
-    @MapsId("id")
+    @JoinColumn(name = "id")
     private PhotoDetails photoDetails;
 
     @ManyToOne
@@ -38,28 +38,20 @@ public class Photo {
     private Album album;
 
     @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private List<Tag> tags;
+    private List<TagPhoto> tagPhotos;
 
     @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private List<Comment> comments;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @PrimaryKeyJoinColumn
-//    private PhotoDetails photoDetails;
 
-
-    public Photo(Long id, String title, Timestamp creationTime, String name, PhotoDetails photoDetails, Album album, List<Tag> tags, List<Comment> comments) {
+    public Photo(Long id, String title, Timestamp creationTime, String name, PhotoDetails photoDetails, Album album, List<TagPhoto> tagPhotos, List<Comment> comments) {
         this.id = id;
         this.title = title;
         this.creationTime = creationTime;
         this.name = name;
         this.photoDetails = photoDetails;
         this.album = album;
-        this.tags = tags;
+        this.tagPhotos = tagPhotos;
         this.comments = comments;
     }
 

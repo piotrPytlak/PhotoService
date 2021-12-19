@@ -41,6 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(
+                "/uploadBuffer",
                         "/login",
                         "/userPhotos/**",
                         "/userPhotosPull",

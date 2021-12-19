@@ -20,3 +20,22 @@ body {
     min-width: 80px;
     border-radius: 10px;
 }
+
+.react-tag-input {
+    min-height: 50px !important;
+    width: 80% !important;
+}
+
+.react-tag-input {
+    background: #f0f0f0 !important;
+    color: #333 !important;
+    border-bottom:  1px solid #333 !important;
+}
+
+
+.react-tag-input__tag {
+    background: #ffffff !important;
+}
+.react-tag-input__tag__remove {
+    background: #d4d4d4 !important ;
+}

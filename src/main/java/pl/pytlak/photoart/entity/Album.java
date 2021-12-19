@@ -1,9 +1,6 @@
 package pl.pytlak.photoart.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -11,7 +8,9 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
 public class Album {
 
     @Id
@@ -31,9 +30,19 @@ public class Album {
     @JoinColumn(name = "userId", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "album", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "album", fetch = FetchType.LAZY)
     private List<Photo> photos;
 
+    public Album(Long id, String name, String description, Timestamp creationTime, User user, List<Photo> photos) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.creationTime = creationTime;
+        this.user = user;
+        this.photos = photos;
+    }
+
+    public Album() {
+
+    }
 }

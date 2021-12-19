@@ -35,7 +35,6 @@ public class UserDetailsService {
     private final AuthenticationService authenticationService;
     private final PhotoService photoService;
     private final UserDetailsRepository userDetailsRepository;
-    private final UserService userService;
     private final UserRepository userRepository;
 
 

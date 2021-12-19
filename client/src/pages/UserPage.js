@@ -16,7 +16,7 @@ export function UserPage() {
 
     useEffect(() => {
         loadSelectUser(userId)
-    }, [userId])
+    }, [userId,loadSelectUser])
 
 
     return (

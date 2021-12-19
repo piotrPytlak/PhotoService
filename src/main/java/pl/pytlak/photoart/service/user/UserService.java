@@ -3,6 +3,7 @@ package pl.pytlak.photoart.service.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import pl.pytlak.photoart.dto.request.AddPhotoRequest;
 import pl.pytlak.photoart.dto.response.SearchUserResponse;
 import pl.pytlak.photoart.entitiyKey.FollowId;
 import pl.pytlak.photoart.entity.Follow;
@@ -10,6 +11,7 @@ import pl.pytlak.photoart.entity.User;
 import pl.pytlak.photoart.repository.FollowRepository;
 import pl.pytlak.photoart.repository.UserRepository;
 import pl.pytlak.photoart.service.authentication.AuthenticationService;
+import pl.pytlak.photoart.service.photo.PhotoService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -24,6 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;
     private final FollowRepository followRepository;
+    private final PhotoService photoService;
 
     public void makeFollow(Long userId) throws IllegalArgumentException {
         User user = authenticationService.getCurrentUser();
@@ -63,6 +66,13 @@ public class UserService {
                         .build())
                 .collect(Collectors.toList());
 
+
+    }
+
+    public void addPhoto(AddPhotoRequest addPhotoRequest) {
+
+        User currentUser = authenticationService.getCurrentUser();
+        photoService.addPhoto(addPhotoRequest, currentUser);
 
     }
 

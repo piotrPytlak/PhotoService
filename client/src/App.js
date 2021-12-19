@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage"
 import SetRoute from "./router/SetRoute"
 import {useContext} from "react"
 import {UserPage} from "./pages/UserPage"
+import {UploadFile} from "./pages/UploadFile";
 
 
 export function App() {
@@ -26,6 +27,9 @@ export function App() {
                 <SetRoute path="/user/:userId"
                           alternativePath={"/login"}
                           component={UserPage}/>
+                <SetRoute path="/photo/uploadPhoto"
+                          alternatibePate={"/home"}
+                          component={UploadFile}/>
 
             </Switch>
         </Router>

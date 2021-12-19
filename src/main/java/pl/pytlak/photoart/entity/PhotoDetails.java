@@ -2,7 +2,6 @@ package pl.pytlak.photoart.entity;
 
 import lombok.Builder;
 import lombok.Data;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -14,7 +13,6 @@ public class PhotoDetails {
     @Id
     private Long photoDetailsId;
 
-
     @Column
     private Integer ISO;
 
@@ -24,14 +22,21 @@ public class PhotoDetails {
     @Column
     private String Model;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @MapsId
+    @JoinColumn(name = "photoDetailsId")
+
+    private Photo photo;
+
     @Column(columnDefinition = "varchar(4000)")
     private String Description;
 
-    public PhotoDetails(Long photoDetailsId, Integer ISO, String camera, String model, String description) {
+    public PhotoDetails(Long photoDetailsId, Integer ISO, String camera, String model, Photo photo, String description) {
         this.photoDetailsId = photoDetailsId;
         this.ISO = ISO;
         Camera = camera;
         Model = model;
+        this.photo = photo;
         Description = description;
     }
 

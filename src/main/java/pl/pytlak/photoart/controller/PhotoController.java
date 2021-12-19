@@ -24,6 +24,8 @@ import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.List;
 
+import static org.springframework.http.MediaType.TEXT_PLAIN;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -58,12 +60,32 @@ public class PhotoController {
     @GetMapping("/userPhotosPull")
     public ResponseEntity<List<UserPhotoResponse>> getUserPhotos(@RequestParam("userId") Long userId, @RequestParam("lastPhotoId") Long lastPhotoId) throws Exception {
 //        try {
-            return new ResponseEntity<>(photoService.getPhotosByUserIdPull(userId, lastPhotoId), HttpStatus.OK);
+        return new ResponseEntity<>(photoService.getPhotosByUserIdPull(userId, lastPhotoId), HttpStatus.OK);
 //        } catch (Exception e) {
 //            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //        }
     }
 
+
+    @PostMapping(value = "/uploadBuffer", produces = {"text/plain"})
+    public ResponseEntity<String> uploadBuffer(@RequestPart("files") MultipartFile img) {
+        try {
+            return new ResponseEntity<>(photoService.handlerFileBuffer(img), HttpStatus.OK);
+        } catch (URISyntaxException | IOException e) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+    }
+
+    @DeleteMapping("/uploadBuffer")
+    public ResponseEntity<?> clearBuffer(@RequestBody String uuid) {
+        try {
+            photoService.clearBuffer(uuid);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (URISyntaxException | IOException e) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
 
 }
 

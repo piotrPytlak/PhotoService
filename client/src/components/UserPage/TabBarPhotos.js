@@ -12,7 +12,7 @@ function InfoIcon() {
 
 export default function TabBarPhotos() {
 
-    const {userTab, selectedTab, selectedUser} = useContext(userContext)
+    const {userTab, selectedTab} = useContext(userContext)
     const {serverUrl, userPhotos, userPhotosLoad} = useContext(apiContext)
     const [photos, setPhotos] = useState([])
     const [load, setLoad] = useState(false)
@@ -21,16 +21,10 @@ export default function TabBarPhotos() {
 
     const scrollHandler = useCallback((event) => {
 
-
-
         if ((event.target.scrollHeight - event.target.scrollTop - event.target.offsetHeight) === 0 && photos.length >= 6 && !load) {
-            setLoad(true)
             userPhotosLoad(userId, (photos).at(-1).photoId)
                 .then((x) => {
                     !!x.length && setPhotos([...photos, ...x])
-                })
-                .finally(() => {
-                    setLoad(false)
                 })
         }
     }, [photos, setPhotos, setLoad, load, userPhotosLoad])
@@ -42,7 +36,7 @@ export default function TabBarPhotos() {
         }).finally(() => {
             setLoad(false)
         })
-    }, [setPhotos, userPhotos])
+    }, [setPhotos, userPhotos, userId])
 
 
     return (
@@ -58,13 +52,12 @@ export default function TabBarPhotos() {
             }}>
                 <Paper onScroll={scrollHandler} style={{
                     width: '85%',
-                    padding: '0px 15px 0px 15px',
                     marginTop: '10px',
                     height: 'auto',
                     minHeight: 'calc(100vh - 410px)'
                 }}
                        sx={{width: 500, height: 450, overflowY: 'scroll'}}>
-                    <ImageList style={{marginTop: '15px'}} variant="masonry" cols={3} gap={8}>
+                    <ImageList style={{marginTop: '15px'}} variant="masonry" cols={4} gap={8}>
                         {photos.map((item) => (
                             <ImageListItem key={item.photoId}>
                                 <img

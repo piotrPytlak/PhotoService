@@ -1,22 +1,23 @@
 import * as React from 'react';
-import {useCallback, useContext, useEffect, useRef, useState} from 'react';
-import {alpha, styled} from '@mui/material/styles';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { alpha, styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import {ClickAwayListener, makeStyles} from "@material-ui/core";
+import { ClickAwayListener, makeStyles } from "@material-ui/core";
 import PhotoArt from '../images/logo/logo_white.png'
 import SearchBar from "./SearchBar/SearchBar";
 import UploadIcon from '@mui/icons-material/Upload';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {Avatar, Box, IconButton} from "@mui/material";
-import {apiContext} from "../store/ApiContext";
-import {useLocation} from "react-router-dom";
+import { Avatar, Box, IconButton } from "@mui/material";
+import { apiContext } from "../store/ApiContext";
+import { useLocation } from "react-router-dom";
 import Button from "@mui/material/Button";
-import {userContext} from "../store/UserContext";
-import {useHistory} from "react-router-dom";
+import { userContext } from "../store/UserContext";
+import { useHistory } from "react-router-dom";
+import UploadIconMenu from './barIconsMenu/UploadIconMenu';
 
 const style = {
     signInButton: {
@@ -112,7 +113,7 @@ const useStyle = makeStyles({
 });
 
 
-const Search = styled('div')(({theme}) => ({
+const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     backgroundColor: alpha(theme.palette.common.white, 0.15),
     '&:hover': {
@@ -122,7 +123,7 @@ const Search = styled('div')(({theme}) => ({
     borderRadius: '15px',
 }));
 
-const SearchIconWrapper = styled('div')(({theme}) => ({
+const SearchIconWrapper = styled('div')(({ theme }) => ({
     padding: theme.spacing(0, 2),
     height: '100%',
     position: 'absolute',
@@ -132,7 +133,7 @@ const SearchIconWrapper = styled('div')(({theme}) => ({
     justifyContent: 'center',
 }));
 
-const StyledInputBase = styled(InputBase)(({theme}) => ({
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: 'inherit',
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
@@ -149,15 +150,17 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 }));
 
 
-export default function Bar(props) {
+export default function Bar() {
 
     const classes = useStyle()
     const searchInput = useRef()
     const [searchParam, setSearchParam] = useState('')
-    const {serverUrl, logout} = useContext(apiContext)
-    const {currentUser, loadUser} = useContext(userContext)
-    const {user} = props;
+    const { serverUrl, logout } = useContext(apiContext)
+    const { currentUser, loadUser } = useContext(userContext)
+    const [menuOpen, setMenuOpen] = useState(false)
+    const anchor = useRef()
     const currentPath = useLocation()
+
 
 
     const history = useHistory();
@@ -177,18 +180,28 @@ export default function Bar(props) {
         })
     }
 
+    const handleUploadIcon = useCallback((() => setMenuOpen(true)), [setMenuOpen])
+
     const handleInput = useCallback((event) => {
 
         setSearchParam(event.target.value)
 
     }, [setSearchParam])
 
+    const onClickLogoHandler = useCallback(() => history.push("/home"), [history])
+
+    const onClickAvatarHandler = useCallback(() => !!currentUser && history.push(`/user/${currentUser.userId}`), [history, currentUser])
+
 
     const onClickAwayInput = useCallback(() => {
-            setSearchParam('')
-            searchInput.current.value = ''
-        }, [setSearchParam, searchInput]
+        setSearchParam('')
+        searchInput.current.value = ''
+    }, [setSearchParam, searchInput]
     )
+
+    const onCloseMenuIconHandler = useCallback((() => setMenuOpen(false)), [setMenuOpen])
+
+
 
     const x = searchParam.length >= 3; // do not touch!
     const searchElement = () => (
@@ -203,22 +216,22 @@ export default function Bar(props) {
                     }}>
 
                         <SearchIconWrapper>
-                            <SearchIcon/>
+                            <SearchIcon />
                         </SearchIconWrapper>
                         <StyledInputBase
                             inputRef={searchInput}
-                            style={{width: '100%'}}
+                            style={{ width: '100%' }}
                             onChange={handleInput}
                             placeholder="Search…"
-                            inputProps={{'aria-label': 'search'}}
+                            inputProps={{ 'aria-label': 'search' }}
 
                         />
                     </Search>
 
                     {searchParam.length >= 3 &&
-                    <div className={classes.searchResults}>
-                        <SearchBar param={searchParam}/>
-                    </div>}
+                        <div className={classes.searchResults}>
+                            <SearchBar param={searchParam} />
+                        </div>}
                 </div>
             </ClickAwayListener>
         </>
@@ -244,45 +257,45 @@ export default function Bar(props) {
             return (
                 <>
                     {searchElement()}
-                    <div style={{display: 'flex', alignItems: 'center', marginRight: '60px'}}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '60px' }}>
                         <Box>
-                            <IconButton size={"large"} color={"inherit"}>
-                                <UploadIcon fontSize={"large"}/>
+                            <IconButton ref={anchor} onClick={handleUploadIcon} size={"large"} color={"inherit"}>
+                                <UploadIcon fontSize={"large"} />
                             </IconButton>
                         </Box>
                         <Box mr="30px">
                             <IconButton size={"large"} color={"inherit"}>
-                                <NotificationsIcon fontSize={"large"}/>
+                                <NotificationsIcon fontSize={"large"} />
                             </IconButton>
                         </Box>
-                        <IconButton>
-                            <Avatar sx={style.listElement}
-                                    src={serverUrl + "images/" + currentUser?.avatarPath}/>
+                        <IconButton onClick={onClickAvatarHandler}>
+                            <Avatar  sx={style.listElement}
+                                src={serverUrl + "images/" + currentUser?.avatarPath} />
                         </IconButton>
                         <Box>
                             <IconButton size={"large"} color={"inherit"}>
-                                <LogoutIcon fontSize={"large"} onClick={handleLogout}/>
+                                <LogoutIcon fontSize={"large"} onClick={handleLogout} />
                             </IconButton>
                         </Box>
+                        <UploadIconMenu isOpen={menuOpen} anchor={anchor} onClose={onCloseMenuIconHandler} />
+
                     </div>
                 </>
 
             )
         else
             return (<> </>)
-
-
     }
-
 
     return (
 
         <AppBar elevation={0} position={currentPath.pathname.startsWith("/user") ? 'static' : 'absolute'}
-                style={{backgroundColor: currentPath.pathname.startsWith("/user") ? "black" : "rgba(0,0,0,0.5)"}}>
+            style={{ backgroundColor: currentPath.pathname.startsWith("/user") ? "black" : "rgba(0,0,0,0.5)" }}>
             <Toolbar style={style.toolBar}>
 
-                <a href='home'> <img style={{maxHeight: '40px', marginLeft: '35px'}} src={PhotoArt}
-                                     alt={'Logo'}/></a>
+                <img onClick={onClickLogoHandler} style={{ maxHeight: '40px', marginLeft: '35px' }} src={PhotoArt}
+                    alt={'Logo'} />
+
                 {renderBarTools()}
             </Toolbar>
         </AppBar>

@@ -2,19 +2,14 @@ import * as React from "react";
 import {useContext, useMemo} from "react";
 import {apiContext} from "../../store/ApiContext";
 import {userContext} from "../../store/UserContext";
-import {makeStyles} from "@material-ui/core/styles";
-
-
-const style = makeStyles({})
-
 
 export default function UserBackground() {
 
     const {selectedUser} = useContext(userContext)
-    const {serverUrl, userDetails} = useContext(apiContext)
+    const {serverUrl} = useContext(apiContext)
     const styleBackground = useMemo(() => {
         return ({
-            backgroundImage: "url(" + serverUrl + "images/" + selectedUser?.backgroundPath.split("\\").join("/") + ")",
+            backgroundImage: "url(" + serverUrl + "images/" + selectedUser?.backgroundPath?.split("\\").join("/") + ")",
             position: 'static',
             maxWidth: '100vw',
             width: '100%',
@@ -27,7 +22,7 @@ export default function UserBackground() {
             backgroundRepeat: 'none',
             zIndex: 1
         });
-    }, [selectedUser])
+    }, [selectedUser,serverUrl])
 
 
     return (

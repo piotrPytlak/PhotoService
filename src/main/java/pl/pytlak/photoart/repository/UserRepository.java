@@ -45,9 +45,9 @@ public interface UserRepository extends CrudRepository<User, Long> {
                     "FROM user_table U" +
                     "         left join album a on U.id = a.user_id" +
                     "         left join photo p on a.id = p.album_id" +
-                    "         join user_details UD on U.id = UD.user_id" +
-                    "         join photo PA on UD.id_avatar_photo = PA.id" +
-                    "         join photo PB on UD.id_background_photo = PB.id " +
+                    "         left join user_details UD on U.id = UD.user_id" +
+                    "         left join photo PA on UD.id_avatar_photo = PA.id" +
+                    "         left join photo PB on UD.id_background_photo = PB.id " +
                     "WHERE U.id = ?1 " +
                     "GROUP BY U.id, " +
                     "         U.age," +
