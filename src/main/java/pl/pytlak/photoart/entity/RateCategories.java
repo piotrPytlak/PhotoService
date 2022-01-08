@@ -1,15 +1,14 @@
 package pl.pytlak.photoart.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
 public class RateCategories {
 
     @Id
@@ -20,9 +19,14 @@ public class RateCategories {
     private String name;
 
     @OneToMany(mappedBy = "rateCategories", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private List<Rate> rates;
 
+    public RateCategories(Long id, String name, List<Rate> rates) {
+        this.id = id;
+        this.name = name;
+        this.rates = rates;
+    }
 
+    public RateCategories() {
+    }
 }

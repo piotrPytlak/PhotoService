@@ -1,30 +1,25 @@
 package pl.pytlak.photoart.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.pytlak.photoart.Exception.NoContentException;
 import pl.pytlak.photoart.dto.request.UploadRequest;
+import pl.pytlak.photoart.dto.response.CategoryAvgPhotoRateResponse;
 import pl.pytlak.photoart.dto.response.UserPhotoResponse;
-import pl.pytlak.photoart.entity.Photo;
 import pl.pytlak.photoart.entity.User;
-import pl.pytlak.photoart.entity.UserDetails;
-import pl.pytlak.photoart.repository.PhotoRepository;
-import pl.pytlak.photoart.repository.UserDetailsRepository;
 import pl.pytlak.photoart.service.authentication.AuthenticationService;
 import pl.pytlak.photoart.service.photo.PhotoService;
-import pl.pytlak.photoart.service.user.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.Timestamp;
 import java.util.List;
-
-import static org.springframework.http.MediaType.TEXT_PLAIN;
 
 
 @RestController
@@ -45,6 +40,7 @@ public class PhotoController {
         return photoService.uploadImgOnServer(img, albumId, title);
     }
 
+
     @GetMapping("/userAvatar")
     public String getUserAvatar() {
         User user = authenticationService.getCurrentUser();
@@ -52,9 +48,20 @@ public class PhotoController {
 
     }
 
+
+    @GetMapping("/photosInUserAlbum")
+    public ResponseEntity<List<UserPhotoResponse>> getAlbumPhotosByAlbumId(@RequestParam("userId") Long userId, @RequestParam("albumId") Long albumId) {
+        return new ResponseEntity<>(photoService.getPhotosByUserIdAndAlbumId(userId, albumId), HttpStatus.OK);
+    }
+
     @GetMapping("/userPhotos/{userId}")
     public ResponseEntity<List<UserPhotoResponse>> getUserPhotos(@PathVariable("userId") @NotBlank Long userId) {
         return new ResponseEntity<>(photoService.getPhotosByUserId(userId), HttpStatus.OK);
+    }
+
+    @GetMapping("/userAllPhotos/{userId}")
+    public ResponseEntity<List<UserPhotoResponse>> getAllUserPhotos(@PathVariable("userId") @NotBlank Long userId) {
+        return new ResponseEntity<>(photoService.getAllPhotosByUserId(userId), HttpStatus.OK);
     }
 
     @GetMapping("/userPhotosPull")
@@ -85,6 +92,19 @@ public class PhotoController {
         } catch (URISyntaxException | IOException e) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+    }
+
+
+    @GetMapping("/getPhotoInformation/{photoId}")
+    public ResponseEntity<CategoryAvgPhotoRateResponse> getPhotoInformation(@PathVariable @NotBlank Long photoId) {
+
+        try {
+            return new ResponseEntity<>(photoService.getPhotoInformationByPhotoId(photoId), HttpStatus.OK);
+        } catch (NoContentException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
     }
 
 }

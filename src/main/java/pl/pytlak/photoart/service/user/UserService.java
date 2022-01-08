@@ -3,13 +3,16 @@ package pl.pytlak.photoart.service.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import pl.pytlak.photoart.dto.request.AboutMeRequest;
 import pl.pytlak.photoart.dto.request.AddPhotoRequest;
 import pl.pytlak.photoart.dto.response.SearchUserResponse;
 import pl.pytlak.photoart.entitiyKey.FollowId;
 import pl.pytlak.photoart.entity.Follow;
 import pl.pytlak.photoart.entity.User;
 import pl.pytlak.photoart.repository.FollowRepository;
+import pl.pytlak.photoart.repository.UserDetailsRepository;
 import pl.pytlak.photoart.repository.UserRepository;
+import pl.pytlak.photoart.security.UserDetailsImpl;
 import pl.pytlak.photoart.service.authentication.AuthenticationService;
 import pl.pytlak.photoart.service.photo.PhotoService;
 
@@ -24,6 +27,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserDetailsRepository userDetailsRepository;
     private final AuthenticationService authenticationService;
     private final FollowRepository followRepository;
     private final PhotoService photoService;
@@ -69,9 +73,20 @@ public class UserService {
 
     }
 
+
+    public void editAboutMe(AboutMeRequest aboutMeRequest){
+        User loggedUser = authenticationService.getCurrentUser();
+
+        loggedUser.getUserDetails().setAboutMe(aboutMeRequest.getContent());
+        userDetailsRepository.save(loggedUser.getUserDetails());
+
+    }
+
+
     public void addPhoto(AddPhotoRequest addPhotoRequest) {
 
         User currentUser = authenticationService.getCurrentUser();
+
         photoService.addPhoto(addPhotoRequest, currentUser);
 
     }

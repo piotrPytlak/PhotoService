@@ -5,12 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.pytlak.photoart.dto.request.AboutMeRequest;
 import pl.pytlak.photoart.dto.response.SearchUserResponse;
 import pl.pytlak.photoart.dto.response.UserInformation;
 import pl.pytlak.photoart.service.user.UserDetailsService;
 import pl.pytlak.photoart.service.user.UserService;
 import pl.pytlak.photoart.type.UserDetailsImg;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -48,6 +50,19 @@ public class UserController {
     @PostMapping("/uploadBackground")
     public ResponseEntity<?> uploadBackground(@RequestParam("imageFile") MultipartFile background) throws IOException, URISyntaxException {
         return userDetailsService.uploadUserDetailsImg(background, UserDetailsImg.BACKGROUND);
+    }
+
+    @PostMapping("/editAboutMe")
+    public ResponseEntity<?> editAboutMe(@Valid @RequestBody AboutMeRequest aboutMeRequest){
+
+        try{
+            userService.editAboutMe(aboutMeRequest);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
     }
 
 

@@ -1,0 +1,83 @@
+.slideContainer {
+  position: relative;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  min-width: 1092px;
+  height: calc(0.7 * 100vh) !important;
+}
+
+.App {
+  font-family: sans-serif;
+}
+
+.MuiGrid-spacing-xs-2 {
+  width: 100% !important;
+}
+
+._3AWTh {
+  position: static;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+._3ZUEV {
+  position: absolute;
+  top: 7rem;
+  right: 1.6rem;
+}
+
+._3bkri {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3a3434;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+}
+
+._3AWTh::before {
+  content: "";
+  position: static;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  z-index: -1;
+  background-color: hsla(0, 0%, 0%, 0.9);
+}
+
+.photos-thumbnail {
+  position: static !important;
+  margin-bottom: 10px;
+  margin-top: 20px;
+  bottom: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
+.photo-container {
+  height: 80%;
+  width: auto;
+}
+
+.photo {
+  height: 100%;
+  width: 100%;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+.chart {
+  padding: 40px 150px;
+}

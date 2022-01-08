@@ -7,6 +7,7 @@ import {useParams} from "react-router-dom";
 import TabBar from "../components/UserPage/TabBar";
 import TabBarAboutMe from "../components/UserPage/TabBarAboutMe";
 import TabBarPhotos from "../components/UserPage/TabBarPhotos";
+import SetRoute from "../router/SetRoute";
 
 
 export function UserPage() {
@@ -25,8 +26,12 @@ export function UserPage() {
                 <Bar/>
                 <UserBackground/>
                 <TabBar/>
-                <TabBarAboutMe/>
-                <TabBarPhotos/>
+                <SetRoute path="/aboutMe/user/:userId"
+                          alternativePath={"/login"}
+                          component={TabBarAboutMe}/>
+                <SetRoute path="/photos/user/:userId"
+                          alternativePath={"/login"}
+                          component={TabBarPhotos}/>
             </Background>
 
 

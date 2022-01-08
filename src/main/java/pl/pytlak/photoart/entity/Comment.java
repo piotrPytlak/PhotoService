@@ -1,7 +1,6 @@
 package pl.pytlak.photoart.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -9,7 +8,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
 public class Comment {
 
     @Id
@@ -30,4 +31,14 @@ public class Comment {
     @JoinColumn(name = "photoComments", nullable = false)
     private Photo photo;
 
+    public Comment(Long id, String contents, Timestamp creationTime, User user, Photo photo) {
+        this.id = id;
+        this.contents = contents;
+        this.creationTime = creationTime;
+        this.user = user;
+        this.photo = photo;
+    }
+
+    public Comment() {
+    }
 }

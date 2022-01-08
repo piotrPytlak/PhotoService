@@ -11,6 +11,11 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+
+@Table(
+        uniqueConstraints=
+        @UniqueConstraint(columnNames={"name", "userId"})
+)
 public class Album {
 
     @Id

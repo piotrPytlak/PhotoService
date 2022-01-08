@@ -1,31 +1,48 @@
 package pl.pytlak.photoart.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import pl.pytlak.photoart.entitiyKey.RateId;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
 public class Rate {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    @EmbeddedId
+    RateId rateId;
 
     @Column(nullable = false)
-    private Integer rateValue;
+    private Float rateValue;
+
 
     @ManyToOne
-    @JoinColumn(name = "categoriesRates", nullable = false)
+    @JoinColumn(name = "categoryId", referencedColumnName = "id", nullable = false)
+    @MapsId("categoryId")
     private RateCategories rateCategories;
 
     @ManyToOne
-    @JoinColumn(name = "photoRates", nullable = false)
+    @JoinColumn(name = "photoId", referencedColumnName = "id", nullable = false)
+    @MapsId("photoId")
     private Photo photo;
 
     @ManyToOne
-    @JoinColumn(name = "userRates", nullable = false)
+    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
+    @MapsId("userId")
     private User user;
 
+
+    public Rate(RateId rateId, Float rateValue, RateCategories rateCategories, Photo photo, User user) {
+        this.rateId = rateId;
+        this.rateValue = rateValue;
+        this.rateCategories = rateCategories;
+        this.photo = photo;
+        this.user = user;
+    }
+
+    public Rate() {
+    }
 }

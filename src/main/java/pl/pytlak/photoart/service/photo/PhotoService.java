@@ -1,15 +1,15 @@
 package pl.pytlak.photoart.service.photo;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.aspectj.util.FileUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pl.pytlak.photoart.Exception.NoContentException;
 import pl.pytlak.photoart.dto.request.AddPhotoRequest;
+import pl.pytlak.photoart.dto.response.CategoryAvgPhotoRateResponse;
 import pl.pytlak.photoart.dto.response.UserPhotoResponse;
 import pl.pytlak.photoart.entitiyKey.TagPhotoId;
 import pl.pytlak.photoart.entity.*;
@@ -20,16 +20,11 @@ import pl.pytlak.photoart.service.authentication.AuthenticationService;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -67,9 +62,10 @@ public class PhotoService {
                             .title(addPhotoRequest.getTitle())
                             .album(album)
                             .build())
-                    .Camera(addPhotoRequest.getCamera())
-                    .ISO(addPhotoRequest.getISO())
-                    .Model(addPhotoRequest.getModel())
+                    .camera(addPhotoRequest.getCamera())
+                    .ISO(addPhotoRequest.getIso() != null ? addPhotoRequest.getIso().toString() : null)
+                    .exif(addPhotoRequest.getExif().replaceAll("\u0000", ""))
+                    .model(addPhotoRequest.getModel())
                     .Description(addPhotoRequest.getDescription())
                     .build());
 
@@ -124,6 +120,20 @@ public class PhotoService {
                         .build()).collect(Collectors.toList());
     }
 
+    public List<UserPhotoResponse> getAllPhotosByUserId(Long userId) {
+        return photoRepository.getAllUserPhotos(userId).stream()
+                .map(x -> UserPhotoResponse.builder()
+                        .photoId(x.getId())
+                        .photoPath(x.getName())
+                        .photoTitle(x.getTitle())
+                        .creationTime(x.getCreationTime())
+                        .ISO(x.getPhotoDetails().getISO())
+                        .Model(x.getPhotoDetails().getModel())
+                        .Description(x.getPhotoDetails().getDescription())
+                        .Camera(x.getPhotoDetails().getCamera())
+                        .build()).collect(Collectors.toList());
+    }
+
     public List<UserPhotoResponse> getPhotosByUserIdPull(Long userId, Long photoId) throws Exception {
 
         Optional<Photo> lastPhoto = photoRepository.getLastPhoto(userId, photoId);
@@ -155,6 +165,7 @@ public class PhotoService {
         Optional<Album> optionalAlbum = albumService.findByAlbumIdAndUserId(albumId, user.getId());
 
         if (optionalAlbum.isPresent()) {
+
             Photo photo = Photo.builder()
                     .name(image.getOriginalFilename())
                     .title(title)
@@ -163,10 +174,6 @@ public class PhotoService {
 
 
             photoDetailsRepository.save(PhotoDetails.builder()
-                    .Description("xd")
-                    .Model("sf")
-                    .ISO(123)
-                    .Camera("cds")
                     .photo(photo)
                     .build());
 
@@ -214,5 +221,38 @@ public class PhotoService {
     }
 
 
+    public CategoryAvgPhotoRateResponse getPhotoInformationByPhotoId(Long photoId) throws NoContentException {
+
+        return photoRepository.getPhotoInformationByPhotoId(photoId).map(x -> CategoryAvgPhotoRateResponse.builder()
+                .describe(x.getDescribe())
+                .title(x.getTitle())
+                .camera(x.getCamera())
+                .model(x.getModel())
+                .ISO(x.getISO())
+                .photoId(x.getPhotoId())
+                .creativityAvg(x.getCreativityCOUNT() > 0 ? x.getCreativitySUM() / x.getCreativityCOUNT() : null)
+                .lightingAvg(x.getLightingCOUNT() > 0 ? x.getLightingSUM() / x.getLightingCOUNT() : null)
+                .originalityAvg(x.getOriginalityCOUNT() > 0 ? x.getOriginalitySUM() / x.getOriginalityCOUNT() : null)
+                .qualityAvg(x.getQualityCOUNT() > 0 ? x.getQualitySUM() / x.getQualityCOUNT() : null)
+                .artisticImpressionsAvg(x.getArtisticImpressionsCOUNT() > 0 ? x.getArtisticImpressionsSUM() / x.getArtisticImpressionsCOUNT() : null)
+                .build()).orElseThrow(() -> new NoContentException("Photo not exists !!!"));
+
+    }
+
+    public List<UserPhotoResponse> getPhotosByUserIdAndAlbumId(Long userId, Long albumId) {
+
+        return photoRepository.getPhotosFromAlbum(userId, albumId).stream()
+                .map(photo -> UserPhotoResponse.builder()
+                        .photoPath(photo.getName())
+                        .photoId(photo.getId())
+                        .photoTitle(photo.getTitle())
+                        .Camera(photo.getPhotoDetails().getCamera())
+                        .ISO(photo.getPhotoDetails().getISO())
+                        .creationTime(photo.getCreationTime())
+                        .Description(photo.getPhotoDetails().getDescription())
+                        .Model(photo.getPhotoDetails().getModel())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
 

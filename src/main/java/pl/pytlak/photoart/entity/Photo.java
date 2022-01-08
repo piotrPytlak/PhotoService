@@ -43,8 +43,11 @@ public class Photo {
     @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY)
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "photo", fetch = FetchType.LAZY)
+    private List<Rate> rates;
 
-    public Photo(Long id, String title, Timestamp creationTime, String name, PhotoDetails photoDetails, Album album, List<TagPhoto> tagPhotos, List<Comment> comments) {
+
+    public Photo(Long id, String title, Timestamp creationTime, String name, PhotoDetails photoDetails, Album album, List<TagPhoto> tagPhotos, List<Comment> comments, List<Rate> rates) {
         this.id = id;
         this.title = title;
         this.creationTime = creationTime;
@@ -53,6 +56,7 @@ public class Photo {
         this.album = album;
         this.tagPhotos = tagPhotos;
         this.comments = comments;
+        this.rates = rates;
     }
 
     public Photo() {

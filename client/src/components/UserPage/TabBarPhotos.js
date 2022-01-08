@@ -3,7 +3,7 @@ import {useCallback, useContext, useEffect, useState} from "react";
 import {ImageList, ImageListItem, ImageListItemBar, Paper} from "@mui/material";
 import {userContext} from "../../store/UserContext";
 import {apiContext} from "../../store/ApiContext";
-import {useParams} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import {IconButton, LinearProgress} from "@material-ui/core";
 
 function InfoIcon() {
@@ -16,6 +16,7 @@ export default function TabBarPhotos() {
     const {serverUrl, userPhotos, userPhotosLoad} = useContext(apiContext)
     const [photos, setPhotos] = useState([])
     const [load, setLoad] = useState(false)
+    const history = useHistory();
 
     const {userId} = useParams();
 
@@ -38,10 +39,11 @@ export default function TabBarPhotos() {
         })
     }, [setPhotos, userPhotos, userId])
 
+    const onClickPhoto = useCallback((photo) => history.push(`/photo/gallery/${userId}/${photo.photoId}`),
+        [history, userId])
 
     return (
         <>
-            {selectedTab === userTab.photos &&
             <div style={{
                 display: 'flex',
                 flexDirection: 'row',
@@ -59,7 +61,7 @@ export default function TabBarPhotos() {
                        sx={{width: 500, height: 450, overflowY: 'scroll'}}>
                     <ImageList style={{marginTop: '15px'}} variant="masonry" cols={4} gap={8}>
                         {photos.map((item) => (
-                            <ImageListItem key={item.photoId}>
+                            <ImageListItem onClick={onClickPhoto.bind(this, item)} key={item.photoId}>
                                 <img
                                     src={`${serverUrl + 'images/' + item.photoPath}?w=248&fit=crop&auto=format`}
                                     srcSet={`${serverUrl + 'images/' + item.photoPath}?w=248&fit=crop&auto=format&dpr=2 2x`}
@@ -86,7 +88,6 @@ export default function TabBarPhotos() {
 
             </div>
 
-            }
         </>
     )
 }

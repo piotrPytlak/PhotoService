@@ -1,15 +1,13 @@
 package pl.pytlak.photoart.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.orm.hibernate5.HibernateQueryException;
 import org.springframework.web.bind.annotation.*;
 import pl.pytlak.photoart.dto.request.AddPhotoRequest;
 import pl.pytlak.photoart.dto.request.AlbumAddRequest;
+import pl.pytlak.photoart.dto.response.UserAlbumWithThumbnailResponse;
 import pl.pytlak.photoart.dto.response.UserAlbumsResponse;
-import pl.pytlak.photoart.dto.response.UserPhotoResponse;
 import pl.pytlak.photoart.entity.Album;
 import pl.pytlak.photoart.entity.User;
 import pl.pytlak.photoart.service.album.AlbumService;
@@ -30,8 +28,8 @@ public class AlbumController {
     private final AlbumService albumService;
     private final UserService userService;
 
-    @PostMapping("/album")
-    public void add(@Valid @RequestBody AlbumAddRequest albumAddRequest) {
+    @PostMapping("/addAlbum")
+    public ResponseEntity<?> add(@Valid @RequestBody AlbumAddRequest albumAddRequest) {
         User user = authenticationService.getCurrentUser();
         Album album = new Album();
 
@@ -39,13 +37,22 @@ public class AlbumController {
         album.setDescription(albumAddRequest.getDescription());
         album.setUser(user);
 
-        albumService.add(album);
-
+        try {
+            albumService.add(album);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping("/userAlbums/{userId}")
     public ResponseEntity<List<UserAlbumsResponse>> getUserAlbums(@PathVariable("userId") @NotBlank Long userId) {
         return new ResponseEntity<>(albumService.getAlbumsByUserId(userId), HttpStatus.OK);
+    }
+
+    @GetMapping("/currentUserAlbums")
+    public ResponseEntity<List<UserAlbumsResponse>> getCurrentUserAlbums() {
+        return new ResponseEntity<>(albumService.getAllAlbums(), HttpStatus.OK);
     }
 
     @GetMapping("/userAlbumsPull")
@@ -57,14 +64,23 @@ public class AlbumController {
         }
     }
 
+
     @PostMapping("/addPhoto")
     public ResponseEntity<?> addPhoto(@RequestBody AddPhotoRequest addPhotoRequest) {
         try {
+            System.out.println(addPhotoRequest.getIso());
             userService.addPhoto(addPhotoRequest);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (HibernateQueryException e) {
+        } catch (RuntimeException e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+    }
+
+
+    @GetMapping("/userAlbumsWithThumbnail/{userId}")
+    public ResponseEntity<List<UserAlbumWithThumbnailResponse>> getUserAlbumsWithThumbnails(@PathVariable("userId") @NotBlank Long userId) {
+        return new ResponseEntity<>(albumService.getUserAlbumsWithThumbnailsL(userId), HttpStatus.OK);
     }
 
 

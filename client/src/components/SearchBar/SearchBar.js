@@ -93,7 +93,7 @@ export default function SearchBar(props) {
                 {load && <LinearProgress />}
             </Scrollbars>
             {
-                !!selectedUser && < Redirect to={`/user/${selectedUser.userId}`} />
+                !!selectedUser && < Redirect to={`/aboutMe/user/${selectedUser.userId}`} />
             }
         </>
     )

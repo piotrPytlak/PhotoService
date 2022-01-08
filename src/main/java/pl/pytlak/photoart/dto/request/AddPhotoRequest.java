@@ -15,5 +15,6 @@ public class AddPhotoRequest {
     private String photoUuid;
     private String camera;
     private String model;
-    private Integer ISO;
+    private Long iso;
+    private String exif;
 }
