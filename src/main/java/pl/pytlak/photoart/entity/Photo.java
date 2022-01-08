@@ -27,6 +27,12 @@ public class Photo {
     @Column(nullable = false)
     private String name;
 
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id", referencedColumnName = "photoDetailsId")
+    @MapsId("id")
+    private PhotoDetails photoDetails;
+
     @ManyToOne
     @JoinColumn(name = "albumId")
     private Album album;
@@ -45,16 +51,17 @@ public class Photo {
 //    @PrimaryKeyJoinColumn
 //    private PhotoDetails photoDetails;
 
-    private Photo(Long id, String title, Timestamp creationTime, String name, Album album, List<Tag> tags, List<Comment> comments) {
+
+    public Photo(Long id, String title, Timestamp creationTime, String name, PhotoDetails photoDetails, Album album, List<Tag> tags, List<Comment> comments) {
         this.id = id;
         this.title = title;
         this.creationTime = creationTime;
         this.name = name;
+        this.photoDetails = photoDetails;
         this.album = album;
         this.tags = tags;
         this.comments = comments;
     }
-
 
     public Photo() {
 

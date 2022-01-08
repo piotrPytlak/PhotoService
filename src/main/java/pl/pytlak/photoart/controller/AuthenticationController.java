@@ -34,9 +34,9 @@ public class AuthenticationController {
     public void login(@Valid @RequestBody LoginRequest loginRequest) {
     }
 
+
     @GetMapping("/logout")
     public void logout() {
-        SecurityContextHolder.clearContext();
     }
 
 

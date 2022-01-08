@@ -43,6 +43,53 @@ export default function ApiContext({children}) {
     }
 
 
+    const userPhotos = async (param) => {
+        const body = {
+            method: 'GET',
+            headers: header,
+            credentials: 'include'
+        }
+
+        const response = await fetch(
+            serverUrl + 'userPhotos/' + param,
+            body
+        )
+
+        if (response.ok) {
+            return response.json();
+        } else {
+            return [];
+        }
+    }
+
+    const userPhotosLoad = async (userId, lastPhotoId) => {
+
+        const urlUserId = new URLSearchParams({
+            userId: userId,
+            lastPhotoId: lastPhotoId
+        })
+
+        const body = {
+            method: 'GET',
+            headers: header,
+            credentials: 'include'
+        }
+
+        const response = await fetch(
+            serverUrl + 'userPhotosPull?' + urlUserId,
+            body
+        )
+
+        if (response.ok) {
+            return response.json();
+        } else {
+            return [];
+        }
+
+
+    }
+
+
     const register = async (registerObject) => {
         const body = {
             method: 'POST',
@@ -55,6 +102,20 @@ export default function ApiContext({children}) {
             serverUrl + 'register',
             body,
         )
+    }
+
+    const logout = async () => {
+        const body = {
+            method: 'GET',
+            headers: header,
+            credentials: 'include'
+        }
+
+        return await fetch(
+            serverUrl + 'logout',
+            body
+        )
+
     }
 
 
@@ -142,7 +203,19 @@ export default function ApiContext({children}) {
 
     return (
         <apiContext.Provider
-            value={{login, register, searchBar, PermitType, serverUrl, loginStatus, userDetails, currentUserDetails}}>
+            value={{
+                login,
+                register,
+                searchBar,
+                PermitType,
+                serverUrl,
+                userPhotos,
+                userPhotosLoad,
+                loginStatus,
+                userDetails,
+                logout,
+                currentUserDetails
+            }}>
             {children}
         </apiContext.Provider>
     )

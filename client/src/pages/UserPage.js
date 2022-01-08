@@ -5,7 +5,8 @@ import {useContext, useEffect} from "react";
 import {userContext} from "../store/UserContext";
 import {useParams} from "react-router-dom";
 import TabBar from "../components/UserPage/TabBar";
-import TabBarElements from "../components/UserPage/TabBarElements";
+import TabBarAboutMe from "../components/UserPage/TabBarAboutMe";
+import TabBarPhotos from "../components/UserPage/TabBarPhotos";
 
 
 export function UserPage() {
@@ -24,7 +25,8 @@ export function UserPage() {
                 <Bar/>
                 <UserBackground/>
                 <TabBar/>
-                <TabBarElements/>
+                <TabBarAboutMe/>
+                <TabBarPhotos/>
             </Background>
 
 

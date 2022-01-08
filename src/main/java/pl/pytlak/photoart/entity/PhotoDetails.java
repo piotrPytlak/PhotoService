@@ -14,10 +14,6 @@ public class PhotoDetails {
     @Id
     private Long photoDetailsId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @MapsId
-    @JoinColumn(name = "photoDetailsId")
-    private Photo photo;
 
     @Column
     private Integer ISO;
@@ -31,9 +27,8 @@ public class PhotoDetails {
     @Column(columnDefinition = "varchar(4000)")
     private String Description;
 
-    public PhotoDetails(Long photoDetailsId, Photo photo, Integer ISO, String camera, String model, String description) {
+    public PhotoDetails(Long photoDetailsId, Integer ISO, String camera, String model, String description) {
         this.photoDetailsId = photoDetailsId;
-        this.photo = photo;
         this.ISO = ISO;
         Camera = camera;
         Model = model;

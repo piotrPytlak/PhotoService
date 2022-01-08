@@ -12,6 +12,8 @@ buildNumber.properties
 #avatars
 src/main/resources/static/*.png
 
+src/main/resources/static/images/*
+
 # Compiled class file
 *.class
 

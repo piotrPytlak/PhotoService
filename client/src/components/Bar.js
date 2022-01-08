@@ -16,7 +16,7 @@ import {apiContext} from "../store/ApiContext";
 import {useLocation} from "react-router-dom";
 import Button from "@mui/material/Button";
 import {userContext} from "../store/UserContext";
-
+import {useHistory} from "react-router-dom";
 
 const style = {
     signInButton: {
@@ -154,15 +154,28 @@ export default function Bar(props) {
     const classes = useStyle()
     const searchInput = useRef()
     const [searchParam, setSearchParam] = useState('')
-    const {serverUrl} = useContext(apiContext)
+    const {serverUrl, logout} = useContext(apiContext)
     const {currentUser, loadUser} = useContext(userContext)
     const {user} = props;
     const currentPath = useLocation()
 
 
+    const history = useHistory();
+
+
     useEffect(() => {
         currentPath.pathname.startsWith('/user') && loadUser();
     }, [currentPath, loadUser])
+
+    const handleLogout = (event) => {
+        event.preventDefault()
+        logout().then(response => {
+            if (response.status === 204) {
+                history.push("/home")
+            }
+
+        })
+    }
 
     const handleInput = useCallback((event) => {
 
@@ -248,7 +261,7 @@ export default function Bar(props) {
                         </IconButton>
                         <Box>
                             <IconButton size={"large"} color={"inherit"}>
-                                <LogoutIcon fontSize={"large"}/>
+                                <LogoutIcon fontSize={"large"} onClick={handleLogout}/>
                             </IconButton>
                         </Box>
                     </div>
