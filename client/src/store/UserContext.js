@@ -36,6 +36,7 @@ export default function UserContext({ children }) {
         loadUser,
         currentUser,
         selectedUser,
+          setSelectedUser,
         loadSelectUser,
       }}
     >

@@ -132,7 +132,7 @@ export default function RegisterForm() {
         gender: getInputAttribute("gender"),
       }).then((response) => {
         loadUser().then((user) => {
-          history.push("/user/" + user?.userId);
+          history.push("/aboutMe/user/" + user?.userId);
         });
 
         if (response.status !== 200) setError(true);

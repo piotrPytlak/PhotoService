@@ -2,6 +2,7 @@ package pl.pytlak.photoart.service.photo;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.tika.Tika;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,12 @@ import pl.pytlak.photoart.service.Validation.ValidationService;
 import pl.pytlak.photoart.service.album.AlbumService;
 import pl.pytlak.photoart.service.authentication.AuthenticationService;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -40,6 +43,8 @@ public class PhotoService {
     private final TagRepository tagRepository;
     private final PhotoDetailsRepository photoDetailsRepository;
     private final PhotoTagRepository photoTagRepository;
+    private final Tika apacheTika;
+    private final UserDetailsRepository userDetailsRepository;
 
     public Photo add(Photo photo) {
         return photoRepository.save(photo);
@@ -105,6 +110,125 @@ public class PhotoService {
         );
 
     }
+
+    public void uploadAvatar(MultipartFile avatarImage) throws IOException {
+
+        User loggedUser = authenticationService.getCurrentUser();
+
+        UUID uuid = UUID.randomUUID();
+        String fileExtension = apacheTika.detect(avatarImage.getBytes()).split("/")[1];
+        String fileStoragePath = getClass().getClassLoader().getResource("static/images").getPath().split(":")[1];
+
+
+        Path newFile = Files.createFile(Paths.get(fileStoragePath,"avatars", uuid + "." + fileExtension));
+        Files.write(newFile, avatarImage.getBytes());
+
+
+        try {
+            URL currentAvatarPath = getClass().getClassLoader().getResource("static/images/" + loggedUser.getUserDetails().getAvatarPhoto().getName());
+            Files.delete(Path.of(currentAvatarPath.toURI()));
+        } catch (IOException | URISyntaxException | NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        String currentAvatarName = loggedUser.getUserDetails().getAvatarPhoto() != null ? loggedUser.getUserDetails().getAvatarPhoto().getName() : "empty";
+
+        if (!Files.exists(Paths.get(fileStoragePath, currentAvatarName))) {
+
+
+            PhotoDetails photoDetails = PhotoDetails.builder()
+                    .photo(Photo.builder()
+                            .name("avatars/" + uuid + '.' + fileExtension)
+                            .title("avatar")
+                            .build())
+                    .build();
+
+            PhotoDetails currentAvatar = loggedUser.getUserDetails().getAvatarPhoto() !=null ? loggedUser.getUserDetails().getAvatarPhoto().getPhotoDetails() : null;
+
+            saveChangeAvatarInDatabase(loggedUser.getUserDetails(), photoDetails, currentAvatar);
+
+        } else {
+
+            Files.delete(newFile);
+            throw new IOException();
+
+        }
+
+    }
+
+    public void uploadBackground(MultipartFile avatarImage) throws IOException {
+
+        User loggedUser = authenticationService.getCurrentUser();
+
+        UUID uuid = UUID.randomUUID();
+        String fileExtension = apacheTika.detect(avatarImage.getBytes()).split("/")[1];
+        String fileStoragePath = getClass().getClassLoader().getResource("static/images").getPath().split(":")[1];
+
+
+        Path newFile = Files.createFile(Paths.get(fileStoragePath,"backgrounds", uuid + "." + fileExtension));
+        Files.write(newFile, avatarImage.getBytes());
+
+
+        try {
+            URL currentAvatarPath = getClass().getClassLoader().getResource("static/images/" + loggedUser.getUserDetails().getBackgroundPhoto().getName());
+            Files.delete(Path.of(currentAvatarPath.toURI()));
+        } catch (IOException | URISyntaxException | NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        String currentBackgroundName = loggedUser.getUserDetails().getBackgroundPhoto() != null ? loggedUser.getUserDetails().getBackgroundPhoto().getName() : "empty";
+
+        if (!Files.exists(Paths.get(fileStoragePath, currentBackgroundName))) {
+
+
+            PhotoDetails photoDetails = PhotoDetails.builder()
+                    .photo(Photo.builder()
+                            .name("backgrounds/" + uuid + '.' + fileExtension)
+                            .title("backgrounds")
+                            .build())
+                    .build();
+
+            PhotoDetails currentBackground = loggedUser.getUserDetails().getBackgroundPhoto() !=null ? loggedUser.getUserDetails().getBackgroundPhoto().getPhotoDetails() : null;
+
+            saveChangeBackgroundInDatabase(loggedUser.getUserDetails(), photoDetails, currentBackground);
+
+        } else {
+
+            Files.delete(newFile);
+            throw new IOException();
+
+        }
+
+    }
+
+    @Transactional
+    public void saveChangeAvatarInDatabase(UserDetails userDetails, PhotoDetails newPhoto, PhotoDetails currentPhoto) {
+
+        PhotoDetails photoDetails = photoDetailsRepository.save(newPhoto);
+
+        userDetails.setAvatarPhoto(photoDetails.getPhoto());
+        userDetailsRepository.save(userDetails);
+
+        if (currentPhoto != null)
+            photoDetailsRepository.delete(currentPhoto);
+
+
+    }
+
+    @Transactional
+    public void saveChangeBackgroundInDatabase(UserDetails userDetails, PhotoDetails newPhoto, PhotoDetails currentPhoto) {
+
+        PhotoDetails photoDetails = photoDetailsRepository.save(newPhoto);
+
+        userDetails.setBackgroundPhoto(photoDetails.getPhoto());
+        userDetailsRepository.save(userDetails);
+
+        if (currentPhoto != null)
+            photoDetailsRepository.delete(currentPhoto);
+
+
+    }
+
 
     public List<UserPhotoResponse> getPhotosByUserId(Long userId) {
         return photoRepository.getUserPhotos(userId, PageRequest.of(0, 7)).stream()

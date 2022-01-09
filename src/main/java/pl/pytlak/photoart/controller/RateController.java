@@ -30,4 +30,8 @@ public class RateController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
+
+
 }

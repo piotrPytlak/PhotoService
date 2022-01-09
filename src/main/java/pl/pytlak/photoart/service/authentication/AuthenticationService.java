@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import pl.pytlak.photoart.dto.request.RegisterRequest;
 import pl.pytlak.photoart.repository.AuthenticationRepository;
 import pl.pytlak.photoart.entity.User;
+import pl.pytlak.photoart.repository.UserDetailsRepository;
 import pl.pytlak.photoart.repository.UserRepository;
 import pl.pytlak.photoart.security.UserDetailsImpl;
 
@@ -21,16 +22,21 @@ import java.util.Optional;
 public class AuthenticationService implements AuthenticationRepository {
 
 
-    private final UserRepository userRepository;
+    private final UserDetailsRepository userDetailsRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public Optional<User> register(RegisterRequest registerRequest) {
+
         User user = new User(registerRequest.getEmail(), registerRequest.getUsername(), registerRequest.getFirstName(), registerRequest.getLastName(),
                 passwordEncoder.encode(registerRequest.getPassword()), registerRequest.getAge(), registerRequest.getGender());
 
+
         try {
-            return Optional.of(userRepository.save(user));
+            return Optional.of(
+                    userDetailsRepository.save(pl.pytlak.photoart.entity.UserDetails.builder()
+                            .user(user)
+                            .build()).getUser());
         } catch (Exception e) {
             return Optional.empty();
         }

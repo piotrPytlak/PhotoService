@@ -106,6 +106,26 @@ export default function ApiContext({ children }) {
     return response.status;
   };
 
+  const editAboutMe = async (content) => {
+
+    const data = {
+      content: content
+    }
+
+    const body = {
+      method: "POST",
+      headers: header,
+      credentials: "include",
+      body: JSON.stringify(data),
+    };
+
+    const response = await fetch(serverUrl + "user/editAboutMe", body);
+
+    return response.ok ? response.json() : undefined;
+
+  };
+
+
   const userPhotosLoad = async (userId, lastPhotoId) => {
     const urlUserId = new URLSearchParams({
       userId: userId,
@@ -117,6 +137,8 @@ export default function ApiContext({ children }) {
       headers: header,
       credentials: "include",
     };
+
+
 
     const response = await fetch(
       serverUrl + "userPhotosPull?" + urlUserId,
@@ -341,9 +363,79 @@ export default function ApiContext({ children }) {
     );
   };
 
+  const uploadAvatar = async (doBeforeRequest, loadUser, fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+
+
+    const currentFile = await doBeforeRequest() || file;
+    const formData = new FormData();
+    formData.append(fieldName, currentFile);
+
+    const request = new XMLHttpRequest();
+    request.open('POST', `${serverUrl}uploadAvatar`);
+    request.withCredentials = true;
+
+
+    request.upload.onprogress = (e) => {
+      progress(e.lengthComputable, e.loaded, e.total);
+    };
+
+    request.onload = function () {
+      if (request.status >= 200 && request.status < 300) {
+        load(request.responseText);
+        loadUser();
+      } else error('Server error')
+    };
+
+    request.send(formData);
+
+
+    return {
+      abort: () => {
+        request.abort();
+        abort();
+      },
+    };
+  };
+
+  const uploadBackGround = async (doBeforeRequest, loadUser, fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+
+
+    const currentFile = await doBeforeRequest() || file;
+    const formData = new FormData();
+    formData.append(fieldName, currentFile);
+
+    const request = new XMLHttpRequest();
+    request.open('POST', `${serverUrl}uploadBackground`);
+    request.withCredentials = true;
+
+
+    request.upload.onprogress = (e) => {
+      progress(e.lengthComputable, e.loaded, e.total);
+    };
+
+    request.onload = function () {
+      if (request.status >= 200 && request.status < 300) {
+        load(request.responseText);
+        loadUser();
+      } else error('Server error')
+    };
+
+    request.send(formData);
+
+
+    return {
+      abort: () => {
+        request.abort();
+        abort();
+      },
+    };
+  };
+
   return (
     <apiContext.Provider
       value={{
+        uploadBackGround,
+        uploadAvatar,
         addAlbum,
         currentUserAlbums,
         photoLoadComments,
@@ -365,6 +457,7 @@ export default function ApiContext({ children }) {
         logout,
         currentUserDetails,
         addComment,
+        editAboutMe
       }}
     >
       {children}

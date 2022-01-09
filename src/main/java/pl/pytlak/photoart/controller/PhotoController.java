@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.pytlak.photoart.Exception.NoContentException;
+import pl.pytlak.photoart.dto.request.AvatarImage;
 import pl.pytlak.photoart.dto.request.UploadRequest;
 import pl.pytlak.photoart.dto.response.CategoryAvgPhotoRateResponse;
 import pl.pytlak.photoart.dto.response.UserPhotoResponse;
@@ -30,6 +31,7 @@ public class PhotoController {
     private final PhotoService photoService;
     private final AuthenticationService authenticationService;
 
+
     @PostMapping(value = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Object> upload(@Valid @ModelAttribute UploadRequest uploadRequest) throws URISyntaxException, IOException {
 
@@ -45,6 +47,30 @@ public class PhotoController {
     public String getUserAvatar() {
         User user = authenticationService.getCurrentUser();
         return user.getUserDetails().getAvatarPhoto().getName();
+
+    }
+
+    @PostMapping(value = "/uploadAvatar", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> uploadAvatar(@Valid @ModelAttribute AvatarImage avatarImage) {
+
+        try {
+            photoService.uploadAvatar(avatarImage.getFiles());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @PostMapping(value = "/uploadBackground", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> uploadBackground(@Valid @ModelAttribute AvatarImage avatarImage) {
+
+        try {
+            photoService.uploadBackground(avatarImage.getFiles());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
     }
 

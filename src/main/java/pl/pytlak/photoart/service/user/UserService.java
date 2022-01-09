@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import pl.pytlak.photoart.dto.request.AboutMeRequest;
 import pl.pytlak.photoart.dto.request.AddPhotoRequest;
 import pl.pytlak.photoart.dto.response.SearchUserResponse;
+import pl.pytlak.photoart.dto.response.UserInformation;
 import pl.pytlak.photoart.entitiyKey.FollowId;
 import pl.pytlak.photoart.entity.Follow;
 import pl.pytlak.photoart.entity.User;
+import pl.pytlak.photoart.entity.UserDetails;
 import pl.pytlak.photoart.repository.FollowRepository;
 import pl.pytlak.photoart.repository.UserDetailsRepository;
 import pl.pytlak.photoart.repository.UserRepository;
@@ -74,11 +76,16 @@ public class UserService {
     }
 
 
-    public void editAboutMe(AboutMeRequest aboutMeRequest){
+    public UserInformation editAboutMe(AboutMeRequest aboutMeRequest){
         User loggedUser = authenticationService.getCurrentUser();
 
         loggedUser.getUserDetails().setAboutMe(aboutMeRequest.getContent());
-        userDetailsRepository.save(loggedUser.getUserDetails());
+
+        UserDetails userDetails = userDetailsRepository.save(loggedUser.getUserDetails());
+
+        return UserInformation.builder()
+                .aboutMe(userDetails.getAboutMe())
+                .build();
 
     }
 

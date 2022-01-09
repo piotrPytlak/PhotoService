@@ -53,11 +53,10 @@ public class UserController {
     }
 
     @PostMapping("/editAboutMe")
-    public ResponseEntity<?> editAboutMe(@Valid @RequestBody AboutMeRequest aboutMeRequest){
+    public ResponseEntity<UserInformation> editAboutMe(@Valid @RequestBody AboutMeRequest aboutMeRequest){
 
         try{
-            userService.editAboutMe(aboutMeRequest);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>( userService.editAboutMe(aboutMeRequest),HttpStatus.OK);
         }catch (RuntimeException e){
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);

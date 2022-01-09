@@ -96,7 +96,7 @@ export function PhotoSlide() {
                 setImageIndex={onChangeIndex}
                 imageIndex={sIndex}
             />
-            {isClosed && <Redirect to={`/user/${userId}`}/>}
+            {isClosed && <Redirect to={`/photos/user/${userId}`}/>}
         </div>
     );
 }
