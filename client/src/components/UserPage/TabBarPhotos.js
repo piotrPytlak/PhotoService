@@ -1,7 +1,6 @@
 import * as React from "react";
 import {useCallback, useContext, useEffect, useState} from "react";
 import {ImageList, ImageListItem, ImageListItemBar, Paper} from "@mui/material";
-import {userContext} from "../../store/UserContext";
 import {apiContext} from "../../store/ApiContext";
 import {useHistory, useParams} from "react-router-dom";
 import {IconButton, LinearProgress} from "@material-ui/core";
@@ -12,7 +11,6 @@ function InfoIcon() {
 
 export default function TabBarPhotos() {
 
-    const {userTab, selectedTab} = useContext(userContext)
     const {serverUrl, userPhotos, userPhotosLoad} = useContext(apiContext)
     const [photos, setPhotos] = useState([])
     const [load, setLoad] = useState(false)
@@ -50,19 +48,21 @@ export default function TabBarPhotos() {
                 justifyContent: 'center',
                 minHeight: 'calc(100vh - 392px)',
                 height: 'auto',
-                maxHeight: 'calc(100vh - 45px)'
+                maxHeight: 'calc(100vh - 45px)',
             }}>
                 <Paper onScroll={scrollHandler} style={{
                     width: '85%',
                     marginTop: '10px',
                     height: 'auto',
+                    padding: '0 11px',
                     minHeight: 'calc(100vh - 410px)'
                 }}
                        sx={{width: 500, height: 450, overflowY: 'scroll'}}>
-                    <ImageList style={{marginTop: '15px'}} variant="masonry" cols={4} gap={8}>
+                    <ImageList style={{marginTop: '15px'}} variant="masonry" cols={4} gap={5}>
                         {photos.map((item) => (
                             <ImageListItem onClick={onClickPhoto.bind(this, item)} key={item.photoId}>
                                 <img
+                                    // src={`data:image/jpg;base64,${item?.image}`}
                                     src={`${serverUrl + 'images/' + item.photoPath}?w=248&fit=crop&auto=format`}
                                     srcSet={`${serverUrl + 'images/' + item.photoPath}?w=248&fit=crop&auto=format&dpr=2 2x`}
                                     alt={item.photoTitle}

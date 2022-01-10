@@ -16,6 +16,7 @@ const userTab = {
     aboutMe: 0,
     photos: 1,
     albums: 2,
+    album: 2,
 };
 
 export default function TabBar() {

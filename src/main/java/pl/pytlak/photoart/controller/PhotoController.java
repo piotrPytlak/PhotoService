@@ -133,6 +133,11 @@ public class PhotoController {
 
     }
 
+    @GetMapping("/albumPhotosPull")
+    public ResponseEntity<List<UserPhotoResponse>> getAlbumPhotos(@RequestParam("userId") Long userId, @RequestParam("albumId") Long albumId, @RequestParam("lastPhotoId") Long lastPhotoId) {
+        return new ResponseEntity<>(photoService.getPhotosByAlbumIdAndUserId(albumId, userId, lastPhotoId), HttpStatus.OK);
+    }
+
 }
 
 

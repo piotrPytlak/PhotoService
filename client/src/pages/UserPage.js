@@ -8,6 +8,8 @@ import TabBar from "../components/UserPage/TabBar";
 import TabBarAboutMe from "../components/UserPage/TabBarAboutMe";
 import TabBarPhotos from "../components/UserPage/TabBarPhotos";
 import SetRoute from "../router/SetRoute";
+import TabBarAlbums from "../components/UserPage/TabBarAlbums";
+import TabBarAlbumPhotos from "../components/UserPage/TabBarAlbumPhotos";
 
 
 export function UserPage() {
@@ -17,7 +19,7 @@ export function UserPage() {
 
     useEffect(() => {
         loadSelectUser(userId)
-    }, [userId,loadSelectUser])
+    }, [userId, loadSelectUser])
 
 
     return (
@@ -29,9 +31,18 @@ export function UserPage() {
                 <SetRoute path="/aboutMe/user/:userId"
                           alternativePath={"/login"}
                           component={TabBarAboutMe}/>
+
                 <SetRoute path="/photos/user/:userId"
                           alternativePath={"/login"}
                           component={TabBarPhotos}/>
+
+                <SetRoute path="/albums/user/:userId"
+                          alternativePath={"/login"}
+                          component={TabBarAlbums}/>
+
+                <SetRoute path="/album/user/:userId/:albumId"
+                          alternativePath={"/login"}
+                          component={TabBarAlbumPhotos}/>
             </Background>
 
 

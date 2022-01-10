@@ -25,13 +25,13 @@ export function App() {
                 <SetRoute path="/register" alternativePath={"/home"}
                     isPermit={PermitType.NO_AUTHENTICATED}
                     component={SignUpPage} />
-                <SetRoute path="/(aboutMe|photos|albums)/user/:userId"
+                <SetRoute path="/(aboutMe|photos|albums|album)/user/:userId"
                     alternativePath={"/login"}
                     component={UserPage} />
                 <SetRoute path="/photo/uploadPhoto"
                     alternatibePate={"/home"}
                     component={UploadFile} />
-                <SetRoute path="/photo/gallery/:userId/:photoId" freeAccess={true} component={PhotoGallery} />
+                <SetRoute path="/photo/gallery/:userId/:photoId/:albumId?" freeAccess={true} component={PhotoGallery} />
             </Switch>
         </Router>
 

@@ -41,9 +41,10 @@ public interface AlbumRepository extends CrudRepository<Album, Long> {
     @Query("select A from Album A where A.name=?1 and  A.user.id=?2")
     Optional<Album> findAlbumByNameAndUserId(String name, Long userId);
 
-    @Query(value = "SELECT X.name as albumName, X.creation_time as albumData, X.photoName as photoPath, X.countPhotos as countPhotos " +
-            "FROM (SELECT A.name, " +
-            "             A.creation_time, " +
+    @Query(value = "SELECT X.id as albumId, X.name as albumName, X.creation_time as albumData, X.photoName as photoPath, X.countPhotos as countPhotos " +
+            "FROM (SELECT A.id, " +
+            "             A.name, " +
+            "             A.creation_time," +
             "             row_number() over (partition by A.id order by P.creation_time desc)        as rank, " +
             "             sum(case when P.id is not null then 1 else 0 end) over (partition by A.id) as countPhotos, " +
             "             P.name                                                                     as photoName " +

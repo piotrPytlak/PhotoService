@@ -4,9 +4,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import pl.pytlak.photoart.dto.response.UserPhotoResponse;
 import pl.pytlak.photoart.entity.Photo;
 import pl.pytlak.photoart.queryInterfaces.PhotoInformation;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +52,9 @@ public interface PhotoRepository extends CrudRepository<Photo, Long> {
             "GROUP BY PD.Description, P.title, PD.camera, PD.model, PD.ISO, PD.exif, P.id ")
     Optional<PhotoInformation> getPhotoInformationByPhotoId(Long photoId);
 
-    @Query("SELECT P from Photo P join fetch P.album A join fetch P.photoDetails PD where A.id = ?2 and A.user.id = ?1 ")
-    List<Photo> getPhotosFromAlbum(Long userId, Long albumId);
+    @Query("SELECT P from Photo P join fetch P.album A join fetch P.photoDetails PD where A.id = ?2 and A.user.id = ?1 ORDER BY P.creationTime DESC")
+    List<Photo> getPhotosFromAlbum(Long userId, Long albumId,  PageRequest pageRequest);
+
+    @Query("SELECT P FROM Photo P join P.album A join fetch P.photoDetails PD WHERE  A.id = ?1 and A.user.id = ?2 and P.creationTime < ?3  ORDER BY P.creationTime DESC")
+    List<Photo> getAlbumPhotosLoad(Long albumId, Long userId, Timestamp lastPhotoTime, PageRequest pageRequest);
 }

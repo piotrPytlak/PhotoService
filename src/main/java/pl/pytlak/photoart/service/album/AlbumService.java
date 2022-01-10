@@ -75,6 +75,7 @@ public class AlbumService {
 
         return albumRepository.getUserAlbumWithThumbnails(userId).stream()
                 .map(x -> UserAlbumWithThumbnailResponse.builder()
+                        .albumId(x.getAlbumId())
                         .albumName(x.getAlbumName())
                         .albumData(new SimpleDateFormat("dd-MM-yyyy").format(x.getAlbumData()))
                         .countPhotos(x.getCountPhotos())

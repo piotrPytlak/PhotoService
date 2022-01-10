@@ -265,7 +265,7 @@ export default function Bar() {
                     </div>
                 </>
             )
-        else if (new RegExp('/(aboutMe|photos|albums)').test(currentPath.pathname) || currentPath.pathname.startsWith('/photo/gallery'))
+        else if (new RegExp('/(aboutMe|photos|albums|album)').test(currentPath.pathname) || currentPath.pathname.startsWith('/photo/gallery'))
             return (
                 <>
                     {searchElement()}
@@ -304,8 +304,8 @@ export default function Bar() {
 
 
         <AppBar elevation={0}
-                position={new RegExp('/(aboutMe|photos|albums)').test(currentPath.pathname) ? 'static' : 'absolute'}
-                style={{backgroundColor: new RegExp('/(aboutMe|photos|albums)').test(currentPath.pathname) || currentPath.pathname.startsWith('/photo/gallery') ? "black" : "rgba(0,0,0,0.5)"}}>
+                position={new RegExp('/(aboutMe|photos|albums|album)').test(currentPath.pathname) ? 'static' : 'absolute'}
+                style={{backgroundColor: new RegExp('/(aboutMe|photos|albums|album)').test(currentPath.pathname) || currentPath.pathname.startsWith('/photo/gallery') ? "black" : "rgba(0,0,0,0.5)"}}>
             <Toolbar style={style.toolBar}>
 
                 <img onClick={onClickLogoHandler} style={{maxHeight: '40px', marginLeft: '35px'}} src={PhotoArt}

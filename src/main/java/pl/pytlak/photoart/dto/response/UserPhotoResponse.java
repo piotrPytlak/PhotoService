@@ -20,6 +20,8 @@ public class UserPhotoResponse {
 
     Timestamp creationTime;
 
+    byte[] image;
+
     String ISO;
 
     String Camera;

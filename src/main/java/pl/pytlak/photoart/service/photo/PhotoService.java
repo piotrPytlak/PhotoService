@@ -3,6 +3,7 @@ package pl.pytlak.photoart.service.photo;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.Tika;
+import org.imgscalr.Scalr;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,10 @@ import pl.pytlak.photoart.service.Validation.ValidationService;
 import pl.pytlak.photoart.service.album.AlbumService;
 import pl.pytlak.photoart.service.authentication.AuthenticationService;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
-import java.io.File;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -46,6 +48,19 @@ public class PhotoService {
     private final Tika apacheTika;
     private final UserDetailsRepository userDetailsRepository;
 
+
+    byte[] simpleResizeImage(String path, int targetWidth, String extension) throws Exception {
+
+        BufferedImage image = ImageIO.read(new File(path));
+
+        ByteArrayOutputStream imgCompressed = new ByteArrayOutputStream();
+        ImageIO.write(Scalr.resize(image, targetWidth), extension, imgCompressed);
+
+
+        return imgCompressed.toByteArray();
+    }
+
+
     public Photo add(Photo photo) {
         return photoRepository.save(photo);
     }
@@ -69,7 +84,7 @@ public class PhotoService {
                             .build())
                     .camera(addPhotoRequest.getCamera())
                     .ISO(addPhotoRequest.getIso() != null ? addPhotoRequest.getIso().toString() : null)
-                    .exif(addPhotoRequest.getExif().replaceAll("\u0000", ""))
+                    .exif(addPhotoRequest.getExif() != null ? addPhotoRequest.getExif().replaceAll("\u0000", "") : null)
                     .model(addPhotoRequest.getModel())
                     .Description(addPhotoRequest.getDescription())
                     .build());
@@ -120,7 +135,7 @@ public class PhotoService {
         String fileStoragePath = getClass().getClassLoader().getResource("static/images").getPath().split(":")[1];
 
 
-        Path newFile = Files.createFile(Paths.get(fileStoragePath,"avatars", uuid + "." + fileExtension));
+        Path newFile = Files.createFile(Paths.get(fileStoragePath, "avatars", uuid + "." + fileExtension));
         Files.write(newFile, avatarImage.getBytes());
 
 
@@ -143,7 +158,7 @@ public class PhotoService {
                             .build())
                     .build();
 
-            PhotoDetails currentAvatar = loggedUser.getUserDetails().getAvatarPhoto() !=null ? loggedUser.getUserDetails().getAvatarPhoto().getPhotoDetails() : null;
+            PhotoDetails currentAvatar = loggedUser.getUserDetails().getAvatarPhoto() != null ? loggedUser.getUserDetails().getAvatarPhoto().getPhotoDetails() : null;
 
             saveChangeAvatarInDatabase(loggedUser.getUserDetails(), photoDetails, currentAvatar);
 
@@ -165,7 +180,7 @@ public class PhotoService {
         String fileStoragePath = getClass().getClassLoader().getResource("static/images").getPath().split(":")[1];
 
 
-        Path newFile = Files.createFile(Paths.get(fileStoragePath,"backgrounds", uuid + "." + fileExtension));
+        Path newFile = Files.createFile(Paths.get(fileStoragePath, "backgrounds", uuid + "." + fileExtension));
         Files.write(newFile, avatarImage.getBytes());
 
 
@@ -188,7 +203,7 @@ public class PhotoService {
                             .build())
                     .build();
 
-            PhotoDetails currentBackground = loggedUser.getUserDetails().getBackgroundPhoto() !=null ? loggedUser.getUserDetails().getBackgroundPhoto().getPhotoDetails() : null;
+            PhotoDetails currentBackground = loggedUser.getUserDetails().getBackgroundPhoto() != null ? loggedUser.getUserDetails().getBackgroundPhoto().getPhotoDetails() : null;
 
             saveChangeBackgroundInDatabase(loggedUser.getUserDetails(), photoDetails, currentBackground);
 
@@ -231,17 +246,33 @@ public class PhotoService {
 
 
     public List<UserPhotoResponse> getPhotosByUserId(Long userId) {
-        return photoRepository.getUserPhotos(userId, PageRequest.of(0, 7)).stream()
-                .map(x -> UserPhotoResponse.builder()
-                        .photoId(x.getId())
-                        .photoPath(x.getName())
-                        .photoTitle(x.getTitle())
-                        .creationTime(x.getCreationTime())
-                        .ISO(x.getPhotoDetails().getISO())
-                        .Model(x.getPhotoDetails().getModel())
-                        .Description(x.getPhotoDetails().getDescription())
-                        .Camera(x.getPhotoDetails().getCamera())
-                        .build()).collect(Collectors.toList());
+
+
+        return photoRepository.getUserPhotos(userId, PageRequest.of(0, 15)).stream()
+                .map(x -> {
+//
+//                            URL path = getClass().getClassLoader().getResource("static/images/");
+//                    System.out.println(path.getPath().split(":")[1]);
+//                            byte[] image = null;
+//                            try {
+//                                image = simpleResizeImage(path.getPath().split(":")[1] + x.getName(), 1200, x.getName().split("\\.")[1]);
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+
+                            return UserPhotoResponse.builder()
+                                    .photoId(x.getId())
+                                    .photoPath(x.getName())
+//                                    .image(image)
+                                    .photoTitle(x.getTitle())
+                                    .creationTime(x.getCreationTime())
+                                    .ISO(x.getPhotoDetails().getISO())
+                                    .Model(x.getPhotoDetails().getModel())
+                                    .Description(x.getPhotoDetails().getDescription())
+                                    .Camera(x.getPhotoDetails().getCamera())
+                                    .build();
+                        }
+                ).collect(Collectors.toList());
     }
 
     public List<UserPhotoResponse> getAllPhotosByUserId(Long userId) {
@@ -365,7 +396,7 @@ public class PhotoService {
 
     public List<UserPhotoResponse> getPhotosByUserIdAndAlbumId(Long userId, Long albumId) {
 
-        return photoRepository.getPhotosFromAlbum(userId, albumId).stream()
+        return photoRepository.getPhotosFromAlbum(userId, albumId, PageRequest.of(0, 8)).stream()
                 .map(photo -> UserPhotoResponse.builder()
                         .photoPath(photo.getName())
                         .photoId(photo.getId())
@@ -377,6 +408,23 @@ public class PhotoService {
                         .Model(photo.getPhotoDetails().getModel())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public List<UserPhotoResponse> getPhotosByAlbumIdAndUserId(Long albumId, Long userId, Long lastPhotoId) {
+
+        Optional<Photo> lastPhoto = photoRepository.getLastPhoto(userId, lastPhotoId);
+
+        return lastPhoto.map(x -> photoRepository.getAlbumPhotosLoad(albumId, userId, x.getCreationTime(), PageRequest.of(0, 7)).stream()
+                .map(y -> UserPhotoResponse.builder()
+                        .photoId(y.getId())
+                        .photoPath(y.getName())
+                        .photoTitle(y.getTitle())
+                        .creationTime(y.getCreationTime())
+                        .ISO(y.getPhotoDetails().getISO())
+                        .Model(y.getPhotoDetails().getModel())
+                        .Description(y.getPhotoDetails().getDescription())
+                        .Camera(y.getPhotoDetails().getCamera())
+                        .build()).collect(Collectors.toList())).orElse(Collections.emptyList());
     }
 }
 

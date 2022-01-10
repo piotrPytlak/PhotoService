@@ -11,6 +11,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserAlbumWithThumbnailResponse {
 
+
+    Long albumId;
+
     String albumName;
 
     String albumData;
