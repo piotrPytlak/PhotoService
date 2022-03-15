@@ -10,6 +10,7 @@ PhotoArt is web service for publishing and rating photos.
 - Rate module (comments, rating in categories)
 - User page personalization (profile/background picture, about me section)
 - User statistics (number of photos, albums, followers)
+- Photo rating statistics
 
 ## Tech
 
